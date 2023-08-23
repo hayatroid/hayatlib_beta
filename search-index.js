@@ -1,0 +1,5 @@
+var searchIndex = JSON.parse('{\
+"hayatlib_beta":{"doc":"ライブラリ","t":"ADLLLLLMLLLLLLLLLLLLLLLLLLLLLLL","n":["fps","FPS","add","borrow","borrow_mut","clone","clone_into","coef","constant","diff","exp","from","index","integral","into","inv","len","log","mul","mul","new","pow","pre","shl","shr","sqrt","sub","to_owned","try_from","try_into","type_id"],"q":[[0,"hayatlib_beta"],[1,"hayatlib_beta::fps"]],"d":["","","","","","","","","","","","Returns the argument unchanged.","","","Calls <code>U::from(self)</code>.","","","","","","","","","","","","","","","",""],"i":[0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"f":[0,0,[[1,1]],[[]],[[]],[1,1],[[]],0,[2,1],[1,1],[[1,3],1],[[]],[[1,3]],[1,1],[[]],[[1,3],1],[1,3],[[1,3],1],[[1,4]],[[1,1]],[[[5,[4]]],1],[[1,3,3],1],[[1,3],1],[[1,3]],[[1,3]],[[1,3],[[6,[1]]]],[[1,1]],[[]],[[],7],[[],7],[[],8]],"c":[],"p":[[3,"FPS"],[8,"RemEuclidU32"],[15,"usize"],[6,"ModInt998244353"],[3,"Vec"],[4,"Option"],[4,"Result"],[3,"TypeId"]]}\
+}');
+if (typeof window !== 'undefined' && window.initSearch) {window.initSearch(searchIndex)};
+if (typeof exports !== 'undefined') {exports.searchIndex = searchIndex};
