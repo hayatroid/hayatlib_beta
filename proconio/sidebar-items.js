@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["StdinSource"],"fn":["is_stdin_empty"],"macro":["input","input_interactive"],"mod":["marker","source"]};

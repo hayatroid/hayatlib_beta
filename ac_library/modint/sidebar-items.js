@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DefaultId","Mod1000000007","Mod998244353"],"struct":["Barrett","ButterflyCache","DynamicModInt","StaticModInt"],"trait":["Id","ModIntBase","Modulus","RemEuclidU32"],"type":["ModInt","ModInt1000000007","ModInt998244353"]};

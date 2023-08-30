@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Additive","BitwiseAnd","BitwiseOr","BitwiseXor","Max","Min","Multiplicative","Segtree"],"trait":["Monoid"]};
