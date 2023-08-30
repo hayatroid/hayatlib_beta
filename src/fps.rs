@@ -1,3 +1,5 @@
+//! 形式的べき級数のライブラリです
+
 use std::ops::*;
 
 use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
@@ -34,26 +36,39 @@ pub struct FPS {
 }
 
 impl FPS {
+    /// $f(x) = \\sum \\mathrm{coef}_i x^i$ を返す．
     pub fn new(coef: Vec<M>) -> Self {
         Self { coef }
     }
+
+    /// $f(x) = c$ を返す．
     pub fn constant<T: RemEuclidU32>(c: T) -> Self {
         Self::new(vec![M::new(c)])
     }
+
+    /// $f(x)$ の $\\mathrm{deg}$ を返す．
     pub fn len(&self) -> usize {
         self.coef.len()
     }
+
+    /// $f(x)$ の先頭 $\\mathrm{deg}$ 項を返す．
     pub fn pre(&self, deg: usize) -> Self {
         let mut res = self.clone();
         res.coef.resize(deg, M::new(0));
         res
     }
+
+    /// $f\'(x)$ を返す．$\\mathrm{deg}$ が $1$ 減る．
     pub fn diff(&self) -> Self {
         Self::new((1..self.len()).map(|i| self[i] * i).collect())
     }
+
+    /// $\\int_0^x f(t) \\, \\mathrm{d}t$ を返す．$\\mathrm{deg}$ が $1$ 増える．
     pub fn integral(&self) -> Self {
         Self::new((0..=self.len()).map(|i| if i > 0 { self[i - 1] * M::new(i).inv() } else { M::new(0) }).collect())
     }
+
+    /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{deg}$ 項を返す．
     pub fn inv(&self, deg: usize) -> Self {
         assert!(self.coef.get(0).unwrap_or(&M::new(0)).val() > 0);
         let mut res = Self::constant(self[0].inv().val());
@@ -63,10 +78,14 @@ impl FPS {
         }
         res.pre(deg)
     }
+
+    /// $\\int_0^x \\frac{f\'(t)}{f(t)} \\mathrm{d}t$ の先頭 $\\mathrm{deg}$ 項を返す．
     pub fn log(&self, deg: usize) -> Self {
         assert!(self.coef.get(0).unwrap_or(&M::new(0)).val() == 1);
         (self.diff() * self.inv(deg)).pre(deg - 1).integral()
     }
+
+    /// $\\log g(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{deg}$ 項を返す．
     pub fn exp(&self, deg: usize) -> Self {
         assert!(self.coef.get(0).unwrap_or(&M::new(0)).val() == 0);
         let mut res = Self::constant(1);
@@ -76,6 +95,8 @@ impl FPS {
         }
         res.pre(deg)
     }
+
+    /// $f(x)^m$ の先頭 $\\mathrm{deg}$ 項を返す．
     pub fn pow(&self, m: usize, deg: usize) -> Self {
         if m == 0 {
             return FPS::constant(1).pre(deg);
@@ -93,6 +114,8 @@ impl FPS {
         res = (res << p * m) * a_p.pow(m as u64);
         res
     }
+
+    /// $g(x)^2 = f(x)$ なる $g(x)$ の先頭 $\\mathrm{deg}$ 項を返す．
     pub fn sqrt(&self, deg: usize) -> Option<Self> {
         if self.coef.iter().all(|x| x.val() == 0) {
             return Some(FPS::constant(0).pre(deg));
