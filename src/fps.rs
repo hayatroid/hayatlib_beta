@@ -1,4 +1,4 @@
-//! 形式的べき級数のライブラリです
+//! 形式的冪級数のライブラリです
 
 use std::ops::*;
 
@@ -30,6 +30,7 @@ fn cipolla(a: M) -> M {
     res.0
 }
 
+/// 形式的冪級数．
 #[derive(Clone)]
 pub struct FPS {
     pub coef: Vec<M>,
