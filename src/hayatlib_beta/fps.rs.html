@@ -198,7 +198,8 @@
 <a href="#182" id="182">182</a>
 <a href="#183" id="183">183</a>
 <a href="#184" id="184">184</a>
-</pre></div><pre class="rust"><code><span class="doccomment">//! 形式的べき級数のライブラリです
+<a href="#185" id="185">185</a>
+</pre></div><pre class="rust"><code><span class="doccomment">//! 形式的冪級数のライブラリです
 
 </span><span class="kw">use </span>std::ops::<span class="kw-2">*</span>;
 
@@ -230,7 +231,8 @@
     res.<span class="number">0
 </span>}
 
-<span class="attr">#[derive(Clone)]
+<span class="doccomment">/// 形式的冪級数．
+</span><span class="attr">#[derive(Clone)]
 </span><span class="kw">pub struct </span>FPS {
     <span class="kw">pub </span>coef: Vec&lt;M&gt;,
 }
