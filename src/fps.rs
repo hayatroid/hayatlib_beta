@@ -1,4 +1,4 @@
-//! 形式的冪級数のライブラリです
+//! 形式的冪級数．
 
 use std::ops::*;
 
@@ -31,7 +31,7 @@ fn cipolla(a: M) -> M {
 }
 
 /// 形式的冪級数．
-#[derive(Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FPS {
     pub coef: Vec<M>,
 }
@@ -60,16 +60,44 @@ impl FPS {
     }
 
     /// $f\'(x)$ を返す．$\\mathrm{deg}$ が $1$ 減る．
+    /// 
+    /// # Examples
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 1, 1, 1, 1]);
+    /// let g = FPS::from([1, 2, 3, 4]);
+    /// assert_eq!(f.diff(), g);
+    /// ```
     pub fn diff(&self) -> Self {
         Self::new((1..self.len()).map(|i| self[i] * i).collect())
     }
 
     /// $\\int_0^x f(t) \\, \\mathrm{d}t$ を返す．$\\mathrm{deg}$ が $1$ 増える．
+    /// 
+    /// # Examples
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 2, 3, 4]);
+    /// let g = FPS::from([0, 1, 1, 1, 1]);
+    /// assert_eq!(f.integral(), g);
+    /// ```
     pub fn integral(&self) -> Self {
         Self::new((0..=self.len()).map(|i| if i > 0 { self[i - 1] * M::new(i).inv() } else { M::new(0) }).collect())
     }
 
     /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{deg}$ 項を返す．
+    /// 
+    /// # Examples
+    /// 参考：[Inv of Formal Power Series](https://judge.yosupo.jp/problem/inv_of_formal_power_series)
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([5, 4, 3, 2, 1]);
+    /// let g = FPS::from([598946612, 718735934, 862483121, 635682004, 163871793]);
+    /// assert_eq!(f.inv(5), g);
+    /// ```
     pub fn inv(&self, deg: usize) -> Self {
         assert!(self.coef.get(0).unwrap_or(&M::new(0)).val() > 0);
         let mut res = Self::constant(self[0].inv().val());
@@ -81,12 +109,32 @@ impl FPS {
     }
 
     /// $\\int_0^x \\frac{f\'(t)}{f(t)} \\mathrm{d}t$ の先頭 $\\mathrm{deg}$ 項を返す．
+    /// 
+    /// # Examples
+    /// 参考：[Log of Formal Power Series](https://judge.yosupo.jp/problem/log_of_formal_power_series)
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 1, 499122179, 166374064, 291154613]);
+    /// let g = FPS::from([0, 1, 2, 3, 4]);
+    /// assert_eq!(f.log(5), g);
+    /// ```
     pub fn log(&self, deg: usize) -> Self {
         assert!(self.coef.get(0).unwrap_or(&M::new(0)).val() == 1);
         (self.diff() * self.inv(deg)).pre(deg - 1).integral()
     }
 
     /// $\\log g(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{deg}$ 項を返す．
+    /// 
+    /// # Examples
+    /// 参考：[Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series)
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 1, 2, 3, 4]);
+    /// let g = FPS::from([1, 1, 499122179, 166374064, 291154613]);
+    /// assert_eq!(f.exp(5), g);
+    /// ```
     pub fn exp(&self, deg: usize) -> Self {
         assert!(self.coef.get(0).unwrap_or(&M::new(0)).val() == 0);
         let mut res = Self::constant(1);
@@ -98,6 +146,32 @@ impl FPS {
     }
 
     /// $f(x)^m$ の先頭 $\\mathrm{deg}$ 項を返す．
+    /// 
+    /// # Examples
+    /// 参考：[Pow of Formal Power Series](https://judge.yosupo.jp/problem/pow_of_formal_power_series)
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0, 9, 12]);
+    /// let g = FPS::from([0, 0, 0, 0]);
+    /// assert_eq!(f.pow(3, 4), g);
+    /// ```
+    /// 
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 1]);
+    /// let g = FPS::from([1, 2]);
+    /// assert_eq!(f.pow(2, 2), g);
+    /// ```
+    /// 
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0]);
+    /// let g = FPS::from([1, 0]);
+    /// assert_eq!(f.pow(0, 2), g);
+    /// ```
     pub fn pow(&self, m: usize, deg: usize) -> Self {
         if m == 0 {
             return FPS::constant(1).pre(deg);
@@ -117,6 +191,22 @@ impl FPS {
     }
 
     /// $g(x)^2 = f(x)$ なる $g(x)$ の先頭 $\\mathrm{deg}$ 項を返す．
+    /// 
+    /// # Examples
+    /// 参考：[Sqrt of Formal Power Series](https://judge.yosupo.jp/problem/sqrt_of_formal_power_series)
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0, 9, 12]);
+    /// assert_eq!(f.sqrt(4).unwrap().pow(2, 4), f);
+    /// ```
+    /// 
+    /// ```
+    /// # use hayatlib_beta::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0, 10, 12]);
+    /// assert_eq!(f.sqrt(4), None);
+    /// ```
     pub fn sqrt(&self, deg: usize) -> Option<Self> {
         if self.coef.iter().all(|x| x.val() == 0) {
             return Some(FPS::constant(0).pre(deg));
@@ -136,6 +226,11 @@ impl FPS {
     }
 }
 
+impl<T: Copy + RemEuclidU32, const N: usize> From<[T; N]> for FPS {
+    fn from(value: [T; N]) -> Self {
+        FPS::new(value.iter().map(|&x| M::new(x)).collect())
+    }
+}
 impl Index<usize> for FPS {
     type Output = M;
     fn index(&self, index: usize) -> &Self::Output {
