@@ -142,9 +142,8 @@ impl FPS {
     }
     /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ のとき Panics する．
+    /// $[x^0]f(x) = 0$ のとき Panics する．
     pub fn inv(&self, len: usize) -> Self {
-        // [x⁰]f ≠ 0 を仮定
         assert!(self.len() > 0 && self[0].val() != 0);
         let mut g = Self::from([self[0].inv().val()]);
         for i in 1..=len.next_power_of_two().trailing_zeros() {
@@ -153,13 +152,16 @@ impl FPS {
         }
         g.pre(len)
     }
-
+    /// $\\int_0^x \\frac{f'(x)}{f(x)} dx$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $[x^0]f(x) \\neq 1$ のとき Panics する．
     pub fn log(&self, len: usize) -> Self {
-        // [x⁰]f = 1 を仮定
         assert!(self.len() > 0 && self[0].val() == 1);
         (self.diff() * self.inv(len)).pre(len - 1).integral()
     }
-
+    /// $\\log g(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $[x^0]f(x) \\neq 0$ のとき Panics する．
     pub fn exp(&self, len: usize) -> Self {
         // [x⁰]f = 0 を仮定
         assert!(self.len() == 0 || self[0].val() == 0);
@@ -170,7 +172,7 @@ impl FPS {
         }
         g.pre(len)
     }
-
+    /// $f^m(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     pub fn pow(&self, m: usize, len: usize) -> Self {
         if m == 0 {
             return Self::from([1]).pre(len);
