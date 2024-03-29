@@ -503,6 +503,8 @@
 <a href="#485" id="485">485</a>
 <a href="#486" id="486">486</a>
 <a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 密な形式的冪級数．
 
 
@@ -629,24 +631,26 @@
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::from([<span class="number">0</span>])
     }
-    <span class="doccomment">/// $\\mathrm{len}(f(x))$ を返す．
+    <span class="doccomment">/// $f(x)$ の長さを返す．
     </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="self">self</span>.coef.len()
     }
-    <span class="doccomment">/// $f(x) \\bmod x^n$ を返す．
+    <span class="doccomment">/// $f(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     </span><span class="kw">pub fn </span>pre(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         (<span class="number">0</span>..len).map(|i| <span class="kw">if </span>i &lt; <span class="self">self</span>.len() { <span class="self">self</span>[i] } <span class="kw">else </span>{ M::new(<span class="number">0</span>) }).collect()
     }
-
-    <span class="kw">pub fn </span>diff(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $f'(x)$ を返す．$\\mathrm{len}$ が $1$ 減る．
+    </span><span class="kw">pub fn </span>diff(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         (<span class="number">1</span>..<span class="self">self</span>.len()).map(|i| <span class="self">self</span>[i] * i).collect()
     }
-
-    <span class="kw">pub fn </span>integral(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $\\int_0^x f(x) dx$ を返す．$\\mathrm{len}$ が $1$ 増える．
+    </span><span class="kw">pub fn </span>integral(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         (<span class="number">0</span>..<span class="self">self</span>.len()).map(|i| <span class="self">self</span>[i] / (i + <span class="number">1</span>)).collect::&lt;<span class="self">Self</span>&gt;() &lt;&lt; <span class="number">1
     </span>}
-
-    <span class="kw">pub fn </span>inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $\\[x^0\\]f(x) \\neq 0$ のとき Panics する．
+    </span><span class="kw">pub fn </span>inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f ≠ 0 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() != <span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([<span class="self">self</span>[<span class="number">0</span>].inv().val()]);
