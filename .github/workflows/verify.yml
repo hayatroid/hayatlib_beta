@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
 
     - name: Install dependencies
       run: pip3 install -U online-judge-verify-helper
@@ -35,7 +35,7 @@ jobs:
 
     # required only if you set `languages.rust.list_dependencies_backend.kind` to `"cargo-udeps"`
     - name: Install cargo-udeps for Rust
-      uses: baptiste0928/cargo-install@v2
+      uses: baptiste0928/cargo-install@v3
       with:
         crate: cargo-udeps
         version: '0.1.44'
@@ -47,3 +47,6 @@ jobs:
         YUKICODER_TOKEN: ${{ secrets.YUKICODER_TOKEN }}
         GH_PAT: ${{ secrets.GH_PAT }}
       run: oj-verify all
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
