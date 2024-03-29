@@ -1,3 +1,0 @@
-(function() {var implementors = {
-"hayatlib_beta":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.71.1/core/ops/bit/trait.Shl.html\" title=\"trait core::ops::bit::Shl\">Shl</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.71.1/std/primitive.usize.html\">usize</a>&gt; for <a class=\"struct\" href=\"hayatlib_beta/fps/struct.FPS.html\" title=\"struct hayatlib_beta::fps::FPS\">FPS</a>"]]
-};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
