@@ -505,6 +505,8 @@
 <a href="#487" id="487">487</a>
 <a href="#488" id="488">488</a>
 <a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 密な形式的冪級数．
 
 
@@ -649,10 +651,9 @@
     </span>}
     <span class="doccomment">/// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ のとき Panics する．
+    /// $[x^0]f(x) = 0$ のとき Panics する．
     </span><span class="kw">pub fn </span>inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
-        <span class="comment">// [x⁰]f ≠ 0 を仮定
-        </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() != <span class="number">0</span>);
+        <span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() != <span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([<span class="self">self</span>[<span class="number">0</span>].inv().val()]);
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=len.next_power_of_two().trailing_zeros() {
             <span class="comment">// g ← g(2 - fg)
@@ -660,14 +661,17 @@
         }
         g.pre(len)
     }
-
-    <span class="kw">pub fn </span>log(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
-        <span class="comment">// [x⁰]f = 1 を仮定
-        </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() == <span class="number">1</span>);
+    <span class="doccomment">/// $\\int_0^x \\frac{f'(x)}{f(x)} dx$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $[x^0]f(x) \\neq 1$ のとき Panics する．
+    </span><span class="kw">pub fn </span>log(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+        <span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() == <span class="number">1</span>);
         (<span class="self">self</span>.diff() * <span class="self">self</span>.inv(len)).pre(len - <span class="number">1</span>).integral()
     }
-
-    <span class="kw">pub fn </span>exp(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $\\log g(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $[x^0]f(x) \\neq 0$ のとき Panics する．
+    </span><span class="kw">pub fn </span>exp(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f = 0 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() == <span class="number">0 </span>|| <span class="self">self</span>[<span class="number">0</span>].val() == <span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([<span class="number">1</span>]);
@@ -677,8 +681,8 @@
         }
         g.pre(len)
     }
-
-    <span class="kw">pub fn </span>pow(<span class="kw-2">&amp;</span><span class="self">self</span>, m: usize, len: usize) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $f^m(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    </span><span class="kw">pub fn </span>pow(<span class="kw-2">&amp;</span><span class="self">self</span>, m: usize, len: usize) -&gt; <span class="self">Self </span>{
         <span class="kw">if </span>m == <span class="number">0 </span>{
             <span class="kw">return </span><span class="self">Self</span>::from([<span class="number">1</span>]).pre(len);
         }
