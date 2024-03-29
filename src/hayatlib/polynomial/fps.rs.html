@@ -507,6 +507,9 @@
 <a href="#489" id="489">489</a>
 <a href="#490" id="490">490</a>
 <a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 密な形式的冪級数．
 
 
@@ -700,8 +703,9 @@
         g = (g * a_p.pow(m <span class="kw">as </span>u64)) &lt;&lt; (p * m);
         g
     }
-
-    <span class="kw">pub fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+    <span class="doccomment">/// $g^2(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// そのような $g(x)$ が存在しない場合は `None` を返す．
+    </span><span class="kw">pub fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">if </span><span class="self">self</span>.coef.iter().all(|<span class="kw-2">&amp;</span>x| x.val() == <span class="number">0</span>) {
             <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">Self</span>::from([<span class="number">0</span>]).pre(len));
         }
@@ -718,8 +722,8 @@
         g = g.pre(len - p / <span class="number">2</span>) &lt;&lt; (p / <span class="number">2</span>);
         <span class="prelude-val">Some</span>(g)
     }
-
-    <span class="kw">pub fn </span>composition(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="self">Self</span>, len: usize) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $f \\circ g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    </span><span class="kw">pub fn </span>composition(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="self">Self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// k = ⌈ √len ⌉
         </span><span class="kw">let </span>k = (<span class="number">1</span>..).find(|<span class="kw-2">&amp;</span>i| i * i &gt;= len).unwrap();
         <span class="comment">// g^0, g^1, ..., g^k を計算
@@ -737,8 +741,10 @@
         }
         res
     }
-
-    <span class="kw">pub fn </span>composition_inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $f \\circ g(x) = x$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $[x^0]f(x) \\neq 0$ または $[x^1]f(x) = 0$ のとき Panics する．
+    </span><span class="kw">pub fn </span>composition_inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f = 0, [x¹]f ≠ 0 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">1 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() == <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">1</span>].val() != <span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([<span class="number">0</span>, <span class="self">self</span>[<span class="number">1</span>].inv().val()]);
