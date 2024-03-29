@@ -1,10 +1,11 @@
+# https://qiita.com/KakurenboUni/items/b47d9e6e3582e2149d63 が参考になります
+
 name: verify
 
 on:
   push:
     branches:
     - main
-    - gh-pages
   pull_request:
 
 jobs:
@@ -18,6 +19,8 @@ jobs:
 
     - name: Set up Python
       uses: actions/setup-python@v5
+      with:
+        python-version: 3.12.0
 
     - name: Install dependencies
       run: pip3 install -U online-judge-verify-helper
