@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["zip"],"struct":["PIndex","PRange","PRangeIter","PSlice"],"trait":["ContainerRef","PointerRange"]};

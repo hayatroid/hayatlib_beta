@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CheckedProofStep","CheckerError","ProofTranscriptStep"],"struct":["Checker","CheckerData"],"trait":["ProofProcessor","ProofTranscriptProcessor"]};

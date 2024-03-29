@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Swaps values of two references."><title>swap in omniswap - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="omniswap" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../static.files/storage-4c98445ec4002617.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../omniswap/index.html">omniswap</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../omniswap/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Macro <a href="index.html">omniswap</a>::<wbr><a class="macro" href="#">swap</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/omniswap/swap.rs.html#71-78">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><span class="macro">macro_rules! </span>swap {
+    (<span class="macro-nonterminal">$x</span>: expr, <span class="macro-nonterminal">$y</span>: expr) =&gt; { ... };
+    (<span class="macro-nonterminal">$x</span>: expr, <span class="macro-nonterminal">$y</span>: expr,) =&gt; { ... };
+}</pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Swaps values of two references.</p>
+<p>This is a <strong>sentinel-based</strong> swapping.
+Therefore, unlike [<code>std::mem::swap</code>],
+it can be applied to <strong>possibly overlapping references</strong>.</p>
+<h3 id="basic-usage"><a class="doc-anchor" href="#basic-usage">§</a>Basic usage</h3>
+<p>It has the same syntax as [<code>std::mem::swap</code>].</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>x = <span class="string">'a'</span>;
+<span class="kw">let </span><span class="kw-2">mut </span>y = <span class="string">'b'</span>;
+<span class="macro">omniswap::swap!</span>(<span class="kw-2">&amp;mut </span>x, <span class="kw-2">&amp;mut </span>y);
+<span class="macro">assert_eq!</span>((x, y), (<span class="string">'b'</span>, <span class="string">'a'</span>));</code></pre></div>
+<h3 id="swapping-with-cells"><a class="doc-anchor" href="#swapping-with-cells">§</a>Swapping with cells</h3>
+<p>It also supports [<code>std::cell::Cell</code>] and [<code>std::cell::RefCell</code>].</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>x = Cell::new(<span class="string">'a'</span>);
+<span class="kw">let </span>y = Cell::new(<span class="string">'b'</span>);
+<span class="macro">omniswap::swap!</span>(<span class="kw-2">&amp;</span>x, <span class="kw-2">&amp;</span>y);
+<span class="macro">assert_eq!</span>((x.get(), y.get()), (<span class="string">'b'</span>, <span class="string">'a'</span>));</code></pre></div>
+<p>The two references need not of the same type;
+for example, you may swap values between <code>&amp;mut T</code> and <code>&amp;Cell&lt;T&gt;</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span><span class="kw-2">mut </span>x = <span class="string">'a'</span>;
+<span class="kw">let </span>y = Cell::new(<span class="string">'b'</span>);
+<span class="macro">omniswap::swap!</span>(<span class="kw-2">&amp;mut </span>x, <span class="kw-2">&amp;</span>y);
+<span class="macro">assert_eq!</span>((x, y.get()), (<span class="string">'b'</span>, <span class="string">'a'</span>));</code></pre></div>
+<h3 id="sentinel-requirements"><a class="doc-anchor" href="#sentinel-requirements">§</a>Sentinel requirements</h3>
+<p>In order for <code>swap!</code> to work this way, it requires the value type
+to satisfy <a href="std::default::Default"><code>Default</code></a> or <a href="std::clone::Clone"><code>Clone</code></a>.</p>
+<p>If multiple traits can apply, the behavior is determined
+in the following order:</p>
+<ol>
+<li>If <a href="std::marker::Copy"><code>T: Copy</code></a> it copies the value from the first seference.</li>
+<li>Otherwise, if <a href="std::default::Default"><code>T: Default</code></a>, it swaps the value with the default value.</li>
+<li>Otherwise, if <a href="std::clone::Clone"><code>T: Clone</code></a>, it clones out the value from the first reference.</li>
+</ol>
+<p>Additionally, if the first reference is <a href="std::cell::Cell"><code>&amp;Cell&lt;T&gt;</code></a>, <code>T</code> must satisfy
+<a href="std::default::Default"><code>Default</code></a> or <a href="std::marker::Copy"><code>Copy</code></a>. <a href="std::clone::Clone"><code>Clone</code></a> alone does not suffice.</p>
+<h3 id="evaluation-order"><a class="doc-anchor" href="#evaluation-order">§</a>Evaluation order</h3>
+<p>It evaluates the arguments in the order of appearance, and then
+<strong>the first argument again</strong> to put the value back.</p>
+<h3 id="alternatives"><a class="doc-anchor" href="#alternatives">§</a>Alternatives</h3>
+<p>If the type does not have a good sentinel, you may need to use the following alternatives
+that does not need a sentinel:</p>
+<ul>
+<li>[<code>std::mem::swap</code>]</li>
+<li><a href="https://doc.rust-lang.org/1.77.0/core/primitive.slice.html#method.swap" title="method slice::swap"><code>&lt;[T]&gt;::swap</code></a></li>
+<li><a href="std::cell::Cell::swap"><code>Cell::swap</code></a></li>
+<li><a href="std::cell::RefCell::swap"><code>RefCell::swap</code></a></li>
+</ul>
+</div></details></section></div></main></body></html>
