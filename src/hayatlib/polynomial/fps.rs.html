@@ -498,11 +498,20 @@
 <a href="#480" id="480">480</a>
 <a href="#481" id="481">481</a>
 <a href="#482" id="482">482</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>std::{collections::VecDeque, ops::<span class="kw-2">*</span>};
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+</pre></div><pre class="rust"><code><span class="doccomment">//! 密な形式的冪級数．
+
+
+</span><span class="kw">use </span>std::{collections::VecDeque, ops::<span class="kw-2">*</span>};
 
 <span class="kw">use </span>ac_library::{convolution, ModInt998244353 <span class="kw">as </span>M, RemEuclidU32};
 
-<span class="attr">#[derive(Clone)]
+<span class="doccomment">/// 密な形式的冪級数．
+</span><span class="attr">#[derive(Clone)]
 </span><span class="kw">pub struct </span>FPS {
     <span class="kw">pub </span>coef: Vec&lt;M&gt;
 }
@@ -616,16 +625,17 @@
 
 <span class="attr">#[allow(dead_code)]
 </span><span class="kw">impl </span>FPS {
-    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $f(x) = 0$ を返す．
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::from([<span class="number">0</span>])
     }
-
-    <span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+    <span class="doccomment">/// $\\mathrm{len}(f(x))$ を返す．
+    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="self">self</span>.coef.len()
     }
-
-    <span class="kw">pub fn </span>pre(<span class="kw-2">&amp;</span><span class="self">self</span>, deg: usize) -&gt; <span class="self">Self </span>{
-        (<span class="number">0</span>..deg).map(|i| <span class="kw">if </span>i &lt; <span class="self">self</span>.len() { <span class="self">self</span>[i] } <span class="kw">else </span>{ M::new(<span class="number">0</span>) }).collect()
+    <span class="doccomment">/// $f(x) \\bmod x^n$ を返す．
+    </span><span class="kw">pub fn </span>pre(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
+        (<span class="number">0</span>..len).map(|i| <span class="kw">if </span>i &lt; <span class="self">self</span>.len() { <span class="self">self</span>[i] } <span class="kw">else </span>{ M::new(<span class="number">0</span>) }).collect()
     }
 
     <span class="kw">pub fn </span>diff(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
@@ -636,56 +646,56 @@
         (<span class="number">0</span>..<span class="self">self</span>.len()).map(|i| <span class="self">self</span>[i] / (i + <span class="number">1</span>)).collect::&lt;<span class="self">Self</span>&gt;() &lt;&lt; <span class="number">1
     </span>}
 
-    <span class="kw">pub fn </span>inv(<span class="kw-2">&amp;</span><span class="self">self</span>, deg: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f ≠ 0 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() != <span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([<span class="self">self</span>[<span class="number">0</span>].inv().val()]);
-        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=deg.next_power_of_two().trailing_zeros() {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=len.next_power_of_two().trailing_zeros() {
             <span class="comment">// g ← g(2 - fg)
             </span>g = (g.clone() * (<span class="self">Self</span>::from([<span class="number">2</span>]) - <span class="self">self</span>.pre(<span class="number">1 </span>&lt;&lt; i) * g.clone()).pre(<span class="number">1 </span>&lt;&lt; i)).pre(<span class="number">1 </span>&lt;&lt; i);
         }
-        g.pre(deg)
+        g.pre(len)
     }
 
-    <span class="kw">pub fn </span>log(<span class="kw-2">&amp;</span><span class="self">self</span>, deg: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>log(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f = 1 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() == <span class="number">1</span>);
-        (<span class="self">self</span>.diff() * <span class="self">self</span>.inv(deg)).pre(deg - <span class="number">1</span>).integral()
+        (<span class="self">self</span>.diff() * <span class="self">self</span>.inv(len)).pre(len - <span class="number">1</span>).integral()
     }
 
-    <span class="kw">pub fn </span>exp(<span class="kw-2">&amp;</span><span class="self">self</span>, deg: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>exp(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f = 0 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() == <span class="number">0 </span>|| <span class="self">self</span>[<span class="number">0</span>].val() == <span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([<span class="number">1</span>]);
-        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=deg.next_power_of_two().trailing_zeros() {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=len.next_power_of_two().trailing_zeros() {
             <span class="comment">// g ← g(f + 1 - log(g))
             </span>g = (g.clone() * (<span class="self">self</span>.pre(<span class="number">1 </span>&lt;&lt; i) + <span class="self">Self</span>::from([<span class="number">1</span>]) - g.log(<span class="number">1 </span>&lt;&lt; i))).pre(<span class="number">1 </span>&lt;&lt; i);
         }
-        g.pre(deg)
+        g.pre(len)
     }
 
-    <span class="kw">pub fn </span>pow(<span class="kw-2">&amp;</span><span class="self">self</span>, m: usize, deg: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>pow(<span class="kw-2">&amp;</span><span class="self">self</span>, m: usize, len: usize) -&gt; <span class="self">Self </span>{
         <span class="kw">if </span>m == <span class="number">0 </span>{
-            <span class="kw">return </span><span class="self">Self</span>::from([<span class="number">1</span>]).pre(deg);
+            <span class="kw">return </span><span class="self">Self</span>::from([<span class="number">1</span>]).pre(len);
         }
         <span class="kw">if </span><span class="self">self</span>.coef.iter().all(|<span class="kw-2">&amp;</span>x| x.val() == <span class="number">0</span>) {
-            <span class="kw">return </span><span class="self">Self</span>::from([<span class="number">0</span>]).pre(deg);
+            <span class="kw">return </span><span class="self">Self</span>::from([<span class="number">0</span>]).pre(len);
         }
         <span class="comment">// f = a_p x^p f' ([x⁰]f' = 1) となるように f' をとると
         // f^m = (a_p x^p)^m exp(m log(f')) となる
         </span><span class="kw">let </span>(p, <span class="kw-2">&amp;</span>a_p) = <span class="self">self</span>.coef.iter().enumerate().find(|<span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="kw-2">&amp;</span>x)| x.val() != <span class="number">0</span>).unwrap();
-        <span class="kw">if </span>p.saturating_mul(m) &gt;= deg {
-            <span class="kw">return </span><span class="self">Self</span>::from([<span class="number">0</span>]).pre(deg);
+        <span class="kw">if </span>p.saturating_mul(m) &gt;= len {
+            <span class="kw">return </span><span class="self">Self</span>::from([<span class="number">0</span>]).pre(len);
         }
         <span class="kw">let </span><span class="kw-2">mut </span>g = (<span class="self">self</span>.clone() &gt;&gt; p) / a_p;
-        g = (g.log(deg - p * m) * M::new(m)).exp(deg - p * m);
+        g = (g.log(len - p * m) * M::new(m)).exp(len - p * m);
         g = (g * a_p.pow(m <span class="kw">as </span>u64)) &lt;&lt; (p * m);
         g
     }
 
-    <span class="kw">pub fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>, deg: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+    <span class="kw">pub fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">if </span><span class="self">self</span>.coef.iter().all(|<span class="kw-2">&amp;</span>x| x.val() == <span class="number">0</span>) {
-            <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">Self</span>::from([<span class="number">0</span>]).pre(deg));
+            <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">Self</span>::from([<span class="number">0</span>]).pre(len));
         }
         <span class="kw">let </span>(p, <span class="kw-2">&amp;</span>a_p) = <span class="self">self</span>.coef.iter().enumerate().find(|<span class="kw-2">&amp;</span>(<span class="kw">_</span>, <span class="kw-2">&amp;</span>x)| x.val() != <span class="number">0</span>).unwrap();
         <span class="kw">if </span>p % <span class="number">2 </span>== <span class="number">1 </span>{
@@ -693,21 +703,21 @@
         }
         <span class="kw">let </span>f = <span class="self">self</span>.clone() &gt;&gt; p;
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([a_p.sqrt()<span class="question-mark">?</span>.val()]);
-        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=(deg - p / <span class="number">2</span>).next_power_of_two().trailing_zeros() {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=(len - p / <span class="number">2</span>).next_power_of_two().trailing_zeros() {
             <span class="comment">// g ← (g + f/g) / 2
             </span>g = (g.clone() + (f.pre(<span class="number">1 </span>&lt;&lt; i) * g.inv(<span class="number">1 </span>&lt;&lt; i)).pre(<span class="number">1 </span>&lt;&lt; i)) / M::new(<span class="number">2</span>);
         }
-        g = g.pre(deg - p / <span class="number">2</span>) &lt;&lt; (p / <span class="number">2</span>);
+        g = g.pre(len - p / <span class="number">2</span>) &lt;&lt; (p / <span class="number">2</span>);
         <span class="prelude-val">Some</span>(g)
     }
 
-    <span class="kw">pub fn </span>composition(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="self">Self</span>, deg: usize) -&gt; <span class="self">Self </span>{
-        <span class="comment">// k = ⌈ √deg ⌉
-        </span><span class="kw">let </span>k = (<span class="number">1</span>..).find(|<span class="kw-2">&amp;</span>i| i * i &gt;= deg).unwrap();
+    <span class="kw">pub fn </span>composition(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="self">Self</span>, len: usize) -&gt; <span class="self">Self </span>{
+        <span class="comment">// k = ⌈ √len ⌉
+        </span><span class="kw">let </span>k = (<span class="number">1</span>..).find(|<span class="kw-2">&amp;</span>i| i * i &gt;= len).unwrap();
         <span class="comment">// g^0, g^1, ..., g^k を計算
         </span><span class="kw">let </span><span class="kw-2">mut </span>g = <span class="macro">vec!</span>[<span class="self">Self</span>::from([<span class="number">1</span>]); k + <span class="number">1</span>];
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..k {
-            g[i + <span class="number">1</span>] = (g[i].clone() * rhs.pre(deg)).pre(deg);
+            g[i + <span class="number">1</span>] = (g[i].clone() * rhs.pre(len)).pre(len);
         }
         <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self</span>::from([<span class="number">0</span>]);
         <span class="kw">for </span>f <span class="kw">in </span><span class="self">self</span>.coef.chunks(k).rev() {
@@ -715,22 +725,22 @@
             <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>f) <span class="kw">in </span>f.iter().enumerate() {
                 tmp += g[i].clone() * f;
             }
-            res = (res * g[k].clone()).pre(deg) + tmp;
+            res = (res * g[k].clone()).pre(len) + tmp;
         }
         res
     }
 
-    <span class="kw">pub fn </span>composition_inv(<span class="kw-2">&amp;</span><span class="self">self</span>, deg: usize) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>composition_inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f = 0, [x¹]f ≠ 0 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">1 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() == <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">1</span>].val() != <span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([<span class="number">0</span>, <span class="self">self</span>[<span class="number">1</span>].inv().val()]);
-        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=deg.next_power_of_two().trailing_zeros() {
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">2</span>..=len.next_power_of_two().trailing_zeros() {
             <span class="kw">let </span>fg = <span class="self">self</span>.pre(<span class="number">1 </span>&lt;&lt; i).composition(<span class="kw-2">&amp;</span>g, <span class="number">1 </span>&lt;&lt; i);
             <span class="kw">let </span>dfg = <span class="self">self</span>.pre(<span class="number">1 </span>&lt;&lt; i).diff().composition(<span class="kw-2">&amp;</span>g, <span class="number">1 </span>&lt;&lt; i);
             <span class="comment">// g ← g - (fg - x) / (f'g)
             </span>g -= ((fg - <span class="self">Self</span>::from([<span class="number">0</span>, <span class="number">1</span>])) * dfg.inv(<span class="number">1 </span>&lt;&lt; i)).pre(<span class="number">1 </span>&lt;&lt; i);
         }
-        g.pre(deg)
+        g.pre(len)
     }
 
     <span class="kw">pub fn </span>all_prod(v: <span class="kw-2">&amp;</span>Vec&lt;<span class="self">Self</span>&gt;) -&gt; <span class="self">Self </span>{
@@ -766,8 +776,8 @@
         <span class="kw">if </span>n &lt; m {
             <span class="kw">return </span>a;
         }
-        <span class="kw">let </span>deg = n - m + <span class="number">1</span>;
-        <span class="kw">let </span>c = (a.rev().pre(deg) * b.rev().inv(deg)).pre(deg).rev();
+        <span class="kw">let </span>len = n - m + <span class="number">1</span>;
+        <span class="kw">let </span>c = (a.rev().pre(len) * b.rev().inv(len)).pre(len).rev();
         (a - b * c).pre(m - <span class="number">1</span>)
     }
 
