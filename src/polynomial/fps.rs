@@ -142,7 +142,7 @@ impl FPS {
     }
     /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// # Panics
-    /// $\\[x^0\\]f(x) \\neq 0$ のとき Panics する．
+    /// $[x^0]f(x) \\neq 0$ のとき Panics する．
     pub fn inv(&self, len: usize) -> Self {
         // [x⁰]f ≠ 0 を仮定
         assert!(self.len() > 0 && self[0].val() != 0);
