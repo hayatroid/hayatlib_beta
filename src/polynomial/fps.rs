@@ -1,7 +1,11 @@
+//! 密な形式的冪級数．
+
+
 use std::{collections::VecDeque, ops::*};
 
 use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
 
+/// 密な形式的冪級数．
 #[derive(Clone)]
 pub struct FPS {
     pub coef: Vec<M>
@@ -116,16 +120,17 @@ impl SubAssign for FPS {
 
 #[allow(dead_code)]
 impl FPS {
+    /// $f(x) = 0$ を返す．
     pub fn new() -> Self {
         Self::from([0])
     }
-
+    /// $\\mathrm{len}(f(x))$ を返す．
     pub fn len(&self) -> usize {
         self.coef.len()
     }
-
-    pub fn pre(&self, deg: usize) -> Self {
-        (0..deg).map(|i| if i < self.len() { self[i] } else { M::new(0) }).collect()
+    /// $f(x) \\bmod x^n$ を返す．
+    pub fn pre(&self, len: usize) -> Self {
+        (0..len).map(|i| if i < self.len() { self[i] } else { M::new(0) }).collect()
     }
 
     pub fn diff(&self) -> Self {
@@ -136,56 +141,56 @@ impl FPS {
         (0..self.len()).map(|i| self[i] / (i + 1)).collect::<Self>() << 1
     }
 
-    pub fn inv(&self, deg: usize) -> Self {
+    pub fn inv(&self, len: usize) -> Self {
         // [x⁰]f ≠ 0 を仮定
         assert!(self.len() > 0 && self[0].val() != 0);
         let mut g = Self::from([self[0].inv().val()]);
-        for i in 1..=deg.next_power_of_two().trailing_zeros() {
+        for i in 1..=len.next_power_of_two().trailing_zeros() {
             // g ← g(2 - fg)
             g = (g.clone() * (Self::from([2]) - self.pre(1 << i) * g.clone()).pre(1 << i)).pre(1 << i);
         }
-        g.pre(deg)
+        g.pre(len)
     }
 
-    pub fn log(&self, deg: usize) -> Self {
+    pub fn log(&self, len: usize) -> Self {
         // [x⁰]f = 1 を仮定
         assert!(self.len() > 0 && self[0].val() == 1);
-        (self.diff() * self.inv(deg)).pre(deg - 1).integral()
+        (self.diff() * self.inv(len)).pre(len - 1).integral()
     }
 
-    pub fn exp(&self, deg: usize) -> Self {
+    pub fn exp(&self, len: usize) -> Self {
         // [x⁰]f = 0 を仮定
         assert!(self.len() == 0 || self[0].val() == 0);
         let mut g = Self::from([1]);
-        for i in 1..=deg.next_power_of_two().trailing_zeros() {
+        for i in 1..=len.next_power_of_two().trailing_zeros() {
             // g ← g(f + 1 - log(g))
             g = (g.clone() * (self.pre(1 << i) + Self::from([1]) - g.log(1 << i))).pre(1 << i);
         }
-        g.pre(deg)
+        g.pre(len)
     }
 
-    pub fn pow(&self, m: usize, deg: usize) -> Self {
+    pub fn pow(&self, m: usize, len: usize) -> Self {
         if m == 0 {
-            return Self::from([1]).pre(deg);
+            return Self::from([1]).pre(len);
         }
         if self.coef.iter().all(|&x| x.val() == 0) {
-            return Self::from([0]).pre(deg);
+            return Self::from([0]).pre(len);
         }
         // f = a_p x^p f' ([x⁰]f' = 1) となるように f' をとると
         // f^m = (a_p x^p)^m exp(m log(f')) となる
         let (p, &a_p) = self.coef.iter().enumerate().find(|&(_, &x)| x.val() != 0).unwrap();
-        if p.saturating_mul(m) >= deg {
-            return Self::from([0]).pre(deg);
+        if p.saturating_mul(m) >= len {
+            return Self::from([0]).pre(len);
         }
         let mut g = (self.clone() >> p) / a_p;
-        g = (g.log(deg - p * m) * M::new(m)).exp(deg - p * m);
+        g = (g.log(len - p * m) * M::new(m)).exp(len - p * m);
         g = (g * a_p.pow(m as u64)) << (p * m);
         g
     }
 
-    pub fn sqrt(&self, deg: usize) -> Option<Self> {
+    pub fn sqrt(&self, len: usize) -> Option<Self> {
         if self.coef.iter().all(|&x| x.val() == 0) {
-            return Some(Self::from([0]).pre(deg));
+            return Some(Self::from([0]).pre(len));
         }
         let (p, &a_p) = self.coef.iter().enumerate().find(|&(_, &x)| x.val() != 0).unwrap();
         if p % 2 == 1 {
@@ -193,21 +198,21 @@ impl FPS {
         }
         let f = self.clone() >> p;
         let mut g = Self::from([a_p.sqrt()?.val()]);
-        for i in 1..=(deg - p / 2).next_power_of_two().trailing_zeros() {
+        for i in 1..=(len - p / 2).next_power_of_two().trailing_zeros() {
             // g ← (g + f/g) / 2
             g = (g.clone() + (f.pre(1 << i) * g.inv(1 << i)).pre(1 << i)) / M::new(2);
         }
-        g = g.pre(deg - p / 2) << (p / 2);
+        g = g.pre(len - p / 2) << (p / 2);
         Some(g)
     }
 
-    pub fn composition(&self, rhs: &Self, deg: usize) -> Self {
-        // k = ⌈ √deg ⌉
-        let k = (1..).find(|&i| i * i >= deg).unwrap();
+    pub fn composition(&self, rhs: &Self, len: usize) -> Self {
+        // k = ⌈ √len ⌉
+        let k = (1..).find(|&i| i * i >= len).unwrap();
         // g^0, g^1, ..., g^k を計算
         let mut g = vec![Self::from([1]); k + 1];
         for i in 0..k {
-            g[i + 1] = (g[i].clone() * rhs.pre(deg)).pre(deg);
+            g[i + 1] = (g[i].clone() * rhs.pre(len)).pre(len);
         }
         let mut res = Self::from([0]);
         for f in self.coef.chunks(k).rev() {
@@ -215,22 +220,22 @@ impl FPS {
             for (i, &f) in f.iter().enumerate() {
                 tmp += g[i].clone() * f;
             }
-            res = (res * g[k].clone()).pre(deg) + tmp;
+            res = (res * g[k].clone()).pre(len) + tmp;
         }
         res
     }
 
-    pub fn composition_inv(&self, deg: usize) -> Self {
+    pub fn composition_inv(&self, len: usize) -> Self {
         // [x⁰]f = 0, [x¹]f ≠ 0 を仮定
         assert!(self.len() > 1 && self[0].val() == 0 && self[1].val() != 0);
         let mut g = Self::from([0, self[1].inv().val()]);
-        for i in 2..=deg.next_power_of_two().trailing_zeros() {
+        for i in 2..=len.next_power_of_two().trailing_zeros() {
             let fg = self.pre(1 << i).composition(&g, 1 << i);
             let dfg = self.pre(1 << i).diff().composition(&g, 1 << i);
             // g ← g - (fg - x) / (f'g)
             g -= ((fg - Self::from([0, 1])) * dfg.inv(1 << i)).pre(1 << i);
         }
-        g.pre(deg)
+        g.pre(len)
     }
 
     pub fn all_prod(v: &Vec<Self>) -> Self {
@@ -266,8 +271,8 @@ impl FPS {
         if n < m {
             return a;
         }
-        let deg = n - m + 1;
-        let c = (a.rev().pre(deg) * b.rev().inv(deg)).pre(deg).rev();
+        let len = n - m + 1;
+        let c = (a.rev().pre(len) * b.rev().inv(len)).pre(len).rev();
         (a - b * c).pre(m - 1)
     }
 
