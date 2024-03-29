@@ -191,7 +191,8 @@ impl FPS {
         g = (g * a_p.pow(m as u64)) << (p * m);
         g
     }
-
+    /// $g^2(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// そのような $g(x)$ が存在しない場合は `None` を返す．
     pub fn sqrt(&self, len: usize) -> Option<Self> {
         if self.coef.iter().all(|&x| x.val() == 0) {
             return Some(Self::from([0]).pre(len));
@@ -209,7 +210,7 @@ impl FPS {
         g = g.pre(len - p / 2) << (p / 2);
         Some(g)
     }
-
+    /// $f \\circ g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     pub fn composition(&self, rhs: &Self, len: usize) -> Self {
         // k = ⌈ √len ⌉
         let k = (1..).find(|&i| i * i >= len).unwrap();
@@ -228,7 +229,9 @@ impl FPS {
         }
         res
     }
-
+    /// $f \\circ g(x) = x$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $[x^0]f(x) \\neq 0$ または $[x^1]f(x) = 0$ のとき Panics する．
     pub fn composition_inv(&self, len: usize) -> Self {
         // [x⁰]f = 0, [x¹]f ≠ 0 を仮定
         assert!(self.len() > 1 && self[0].val() == 0 && self[1].val() != 0);
