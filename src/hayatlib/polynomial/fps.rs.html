@@ -6,7 +6,9 @@
         renderMathInElement(document.body, {
             delimiters: [
                 {left: "$$", right: "$$", display: true},
+                {left: "\\(", right: "\\)", display: false},
                 {left: "$", right: "$", display: false},
+                {left: "\\[", right: "\\]", display: true}
             ]
         });
     });
@@ -647,7 +649,7 @@
     </span>}
     <span class="doccomment">/// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// # Panics
-    /// $\\[x^0\\]f(x) \\neq 0$ のとき Panics する．
+    /// $[x^0]f(x) \\neq 0$ のとき Panics する．
     </span><span class="kw">pub fn </span>inv(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         <span class="comment">// [x⁰]f ≠ 0 を仮定
         </span><span class="macro">assert!</span>(<span class="self">self</span>.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>[<span class="number">0</span>].val() != <span class="number">0</span>);
