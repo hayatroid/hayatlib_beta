@@ -6,7 +6,7 @@ use std::{collections::VecDeque, ops::*};
 use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
 
 /// 密な形式的冪級数．
-#[derive(Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FPS {
     pub coef: Vec<M>
 }
@@ -120,29 +120,64 @@ impl SubAssign for FPS {
 
 #[allow(dead_code)]
 impl FPS {
+
     /// $f(x) = 0$ を返す．
     pub fn new() -> Self {
         Self::from([0])
     }
+
     /// $f(x)$ の長さを返す．
     pub fn len(&self) -> usize {
         self.coef.len()
     }
+
     /// $f(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     pub fn pre(&self, len: usize) -> Self {
         (0..len).map(|i| if i < self.len() { self[i] } else { M::new(0) }).collect()
     }
-    /// $f'(x)$ を返す．$\\mathrm{len}$ が $1$ 減る．
+    
+    /// $f\'(x)$ を返す．$\\mathrm{len}$ が $1$ 減る．
+    /// 
+    /// # Examples
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 1, 1, 1, 1]);
+    /// let g = FPS::from([1, 2, 3, 4]);
+    /// assert_eq!(f.diff(), g);
+    /// ```
     pub fn diff(&self) -> Self {
         (1..self.len()).map(|i| self[i] * i).collect()
     }
+
     /// $\\int_0^x f(x) dx$ を返す．$\\mathrm{len}$ が $1$ 増える．
+    /// 
+    /// # Examples
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 2, 3, 4]);
+    /// let g = FPS::from([0, 1, 1, 1, 1]);
+    /// assert_eq!(f.integral(), g);
+    /// ```
     pub fn integral(&self) -> Self {
         (0..self.len()).map(|i| self[i] / (i + 1)).collect::<Self>() << 1
     }
+
     /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// 
     /// # Panics
-    /// $[x^0]f(x) = 0$ のとき Panics する．
+    /// $[x^0]f(x) = 0$ のとき panic する．
+    /// 
+    /// # Examples
+    /// 参考：[Inv of Formal Power Series](https://judge.yosupo.jp/problem/inv_of_formal_power_series)
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([5, 4, 3, 2, 1]);
+    /// let g = FPS::from([598946612, 718735934, 862483121, 635682004, 163871793]);
+    /// assert_eq!(f.inv(5), g);
+    /// ```
     pub fn inv(&self, len: usize) -> Self {
         assert!(self.len() > 0 && self[0].val() != 0);
         let mut g = Self::from([self[0].inv().val()]);
@@ -152,16 +187,40 @@ impl FPS {
         }
         g.pre(len)
     }
-    /// $\\int_0^x \\frac{f'(x)}{f(x)} dx$ の先頭 $\\mathrm{len}$ 項を返す．
+
+    /// $\\int_0^x \\frac{f\'(x)}{f(x)} dx$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// 
     /// # Panics
-    /// $[x^0]f(x) \\neq 1$ のとき Panics する．
+    /// $[x^0]f(x) \\neq 1$ のとき panic する．
+    /// 
+    /// # Examples
+    /// 参考：[Log of Formal Power Series](https://judge.yosupo.jp/problem/log_of_formal_power_series)
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 1, 499122179, 166374064, 291154613]);
+    /// let g = FPS::from([0, 1, 2, 3, 4]);
+    /// assert_eq!(f.log(5), g);
+    /// ```
     pub fn log(&self, len: usize) -> Self {
         assert!(self.len() > 0 && self[0].val() == 1);
         (self.diff() * self.inv(len)).pre(len - 1).integral()
     }
+
     /// $\\log g(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// 
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ のとき Panics する．
+    /// $[x^0]f(x) \\neq 0$ のとき panic する．
+    /// 
+    /// # Examples
+    /// 参考：[Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series)
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 1, 2, 3, 4]);
+    /// let g = FPS::from([1, 1, 499122179, 166374064, 291154613]);
+    /// assert_eq!(f.exp(5), g);
+    /// ```
     pub fn exp(&self, len: usize) -> Self {
         // [x⁰]f = 0 を仮定
         assert!(self.len() == 0 || self[0].val() == 0);
@@ -172,7 +231,32 @@ impl FPS {
         }
         g.pre(len)
     }
+
     /// $f^m(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// 
+    /// # Examples
+    /// 参考：[Pow of Formal Power Series](https://judge.yosupo.jp/problem/pow_of_formal_power_series)
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0, 9, 12]);
+    /// let g = FPS::from([0, 0, 0, 0]);
+    /// assert_eq!(f.pow(3, 4), g);
+    /// ```
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([1, 1]);
+    /// let g = FPS::from([1, 2]);
+    /// assert_eq!(f.pow(2, 2), g);
+    /// ```
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0]);
+    /// let g = FPS::from([1, 0]);
+    /// assert_eq!(f.pow(0, 2), g);
+    /// ```
     pub fn pow(&self, m: usize, len: usize) -> Self {
         if m == 0 {
             return Self::from([1]).pre(len);
@@ -191,8 +275,24 @@ impl FPS {
         g = (g * a_p.pow(m as u64)) << (p * m);
         g
     }
+
     /// $g^2(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// そのような $g(x)$ が存在しない場合は `None` を返す．
+    /// 
+    /// # Examples
+    /// 参考：[Sqrt of Formal Power Series](https://judge.yosupo.jp/problem/sqrt_of_formal_power_series)
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0, 9, 12]);
+    /// assert_eq!(f.sqrt(4).unwrap().pow(2, 4), f);
+    /// ```
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 0, 10, 12]);
+    /// assert_eq!(f.sqrt(4), None);
+    /// ```
     pub fn sqrt(&self, len: usize) -> Option<Self> {
         if self.coef.iter().all(|&x| x.val() == 0) {
             return Some(Self::from([0]).pre(len));
@@ -210,6 +310,7 @@ impl FPS {
         g = g.pre(len - p / 2) << (p / 2);
         Some(g)
     }
+
     /// $f \\circ g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     pub fn composition(&self, rhs: &Self, len: usize) -> Self {
         // k = ⌈ √len ⌉
@@ -229,9 +330,10 @@ impl FPS {
         }
         res
     }
+    
     /// $f \\circ g(x) = x$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ または $[x^1]f(x) = 0$ のとき Panics する．
+    /// $[x^0]f(x) \\neq 0$ または $[x^1]f(x) = 0$ のとき panic する．
     pub fn composition_inv(&self, len: usize) -> Self {
         // [x⁰]f = 0, [x¹]f ≠ 0 を仮定
         assert!(self.len() > 1 && self[0].val() == 0 && self[1].val() != 0);
