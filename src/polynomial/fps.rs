@@ -124,23 +124,25 @@ impl FPS {
     pub fn new() -> Self {
         Self::from([0])
     }
-    /// $\\mathrm{len}(f(x))$ を返す．
+    /// $f(x)$ の長さを返す．
     pub fn len(&self) -> usize {
         self.coef.len()
     }
-    /// $f(x) \\bmod x^n$ を返す．
+    /// $f(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     pub fn pre(&self, len: usize) -> Self {
         (0..len).map(|i| if i < self.len() { self[i] } else { M::new(0) }).collect()
     }
-
+    /// $f'(x)$ を返す．$\\mathrm{len}$ が $1$ 減る．
     pub fn diff(&self) -> Self {
         (1..self.len()).map(|i| self[i] * i).collect()
     }
-
+    /// $\\int_0^x f(x) dx$ を返す．$\\mathrm{len}$ が $1$ 増える．
     pub fn integral(&self) -> Self {
         (0..self.len()).map(|i| self[i] / (i + 1)).collect::<Self>() << 1
     }
-
+    /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// # Panics
+    /// $\\[x^0\\]f(x) \\neq 0$ のとき Panics する．
     pub fn inv(&self, len: usize) -> Self {
         // [x⁰]f ≠ 0 を仮定
         assert!(self.len() > 0 && self[0].val() != 0);
