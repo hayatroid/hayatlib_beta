@@ -42,8 +42,8 @@ jobs:
         version: '0.1.44'
         args: --debug
 
-    - name: Rust Cache
-      uses: Swatinem/rust-cache@v2
+    # - name: Rust Cache
+    #   uses: Swatinem/rust-cache@v2
 
     - name: Run tests
       env:
