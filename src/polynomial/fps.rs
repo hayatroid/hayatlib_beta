@@ -170,7 +170,7 @@ impl FPS {
     /// $[x^0]f(x) = 0$ のとき panic する．
     /// 
     /// # Examples
-    /// 参考：[Inv of Formal Power Series](https://judge.yosupo.jp/problem/inv_of_formal_power_series)
+    /// verified with [Inv of Formal Power Series](https://judge.yosupo.jp/problem/inv_of_formal_power_series)
     /// ```
     /// # use hayatlib::polynomial::fps::FPS;
     /// # use ac_library::ModInt998244353 as M;
@@ -194,7 +194,7 @@ impl FPS {
     /// $[x^0]f(x) \\neq 1$ のとき panic する．
     /// 
     /// # Examples
-    /// 参考：[Log of Formal Power Series](https://judge.yosupo.jp/problem/log_of_formal_power_series)
+    /// verified with [Log of Formal Power Series](https://judge.yosupo.jp/problem/log_of_formal_power_series)
     /// ```
     /// # use hayatlib::polynomial::fps::FPS;
     /// # use ac_library::ModInt998244353 as M;
@@ -213,7 +213,7 @@ impl FPS {
     /// $[x^0]f(x) \\neq 0$ のとき panic する．
     /// 
     /// # Examples
-    /// 参考：[Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series)
+    /// verified with [Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series)
     /// ```
     /// # use hayatlib::polynomial::fps::FPS;
     /// # use ac_library::ModInt998244353 as M;
@@ -235,7 +235,7 @@ impl FPS {
     /// $f^m(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// 
     /// # Examples
-    /// 参考：[Pow of Formal Power Series](https://judge.yosupo.jp/problem/pow_of_formal_power_series)
+    /// verified with [Pow of Formal Power Series](https://judge.yosupo.jp/problem/pow_of_formal_power_series)
     /// ```
     /// # use hayatlib::polynomial::fps::FPS;
     /// # use ac_library::ModInt998244353 as M;
@@ -280,7 +280,7 @@ impl FPS {
     /// そのような $g(x)$ が存在しない場合は `None` を返す．
     /// 
     /// # Examples
-    /// 参考：[Sqrt of Formal Power Series](https://judge.yosupo.jp/problem/sqrt_of_formal_power_series)
+    /// verified with [Sqrt of Formal Power Series](https://judge.yosupo.jp/problem/sqrt_of_formal_power_series)
     /// ```
     /// # use hayatlib::polynomial::fps::FPS;
     /// # use ac_library::ModInt998244353 as M;
@@ -312,6 +312,17 @@ impl FPS {
     }
 
     /// $f \\circ g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// 
+    /// # Examples
+    /// verified with [Composition of Formal Power Series](https://judge.yosupo.jp/problem/composition_of_formal_power_series)
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([5, 4, 3, 2, 1]);
+    /// let g = FPS::from([0, 1, 2, 3, 4]);
+    /// let h = FPS::from([5, 4, 11, 26, 59]);
+    /// assert_eq!(f.composition(&g, 5), h);
+    /// ```
     pub fn composition(&self, rhs: &Self, len: usize) -> Self {
         // k = ⌈ √len ⌉
         let k = (1..).find(|&i| i * i >= len).unwrap();
@@ -334,6 +345,16 @@ impl FPS {
     /// $f \\circ g(x) = x$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
     /// # Panics
     /// $[x^0]f(x) \\neq 0$ または $[x^1]f(x) = 0$ のとき panic する．
+    /// 
+    /// # Examples
+    /// verified with [Compositional Inverse of Formal Power Series](https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series)
+    /// ```
+    /// # use hayatlib::polynomial::fps::FPS;
+    /// # use ac_library::ModInt998244353 as M;
+    /// let f = FPS::from([0, 1, 2, 3, 4]);
+    /// let g = FPS::from([0, 1, 998244351, 5, 998244339]);
+    /// assert_eq!(f.composition_inv(5), g);
+    /// ```
     pub fn composition_inv(&self, len: usize) -> Self {
         // [x⁰]f = 0, [x¹]f ≠ 0 を仮定
         assert!(self.len() > 1 && self[0].val() == 0 && self[1].val() != 0);
