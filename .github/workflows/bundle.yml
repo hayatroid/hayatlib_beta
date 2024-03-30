@@ -26,13 +26,16 @@ jobs:
         crate: procon-bundler
         git: https://github.com/ngtkana/procon-bundler
 
-    - name: Bundle hayatlib to bundle.rs
+    - name: Bundle hayatlib into bundle.rs
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         procon-bundler bundle ../hayatlib > bundle.rs
+        git add -N .
+        git diff --name-only --exit-code
         git config --global user.name "GitHub"
         git config --global user.email "noreply@github.com"
         git add .
         git commit -m "[auto-bundler] bundle commit ${GITHUB_SHA}"
         git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD
+      continue-on-error: true
