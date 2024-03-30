@@ -118,7 +118,6 @@ impl SubAssign for FPS {
     }
 }
 
-#[allow(dead_code)]
 impl FPS {
 
     /// $f(x) = 0$ を返す．
@@ -222,7 +221,6 @@ impl FPS {
     /// assert_eq!(f.exp(5), g);
     /// ```
     pub fn exp(&self, len: usize) -> Self {
-        // [x⁰]f = 0 を仮定
         assert!(self.len() == 0 || self[0].val() == 0);
         let mut g = Self::from([1]);
         for i in 1..=len.next_power_of_two().trailing_zeros() {
@@ -353,10 +351,9 @@ impl FPS {
     /// # use ac_library::ModInt998244353 as M;
     /// let f = FPS::from([0, 1, 2, 3, 4]);
     /// let g = FPS::from([0, 1, 998244351, 5, 998244339]);
-    /// assert_eq!(f.composition_inv(5), g);
+    /// assert_eq!(f.compositional_inv(5), g);
     /// ```
-    pub fn composition_inv(&self, len: usize) -> Self {
-        // [x⁰]f = 0, [x¹]f ≠ 0 を仮定
+    pub fn compositional_inv(&self, len: usize) -> Self {
         assert!(self.len() > 1 && self[0].val() == 0 && self[1].val() != 0);
         let mut g = Self::from([0, self[1].inv().val()]);
         for i in 2..=len.next_power_of_two().trailing_zeros() {
