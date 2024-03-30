@@ -25,7 +25,9 @@ jobs:
         python-version: 3.12.0
 
     - name: Install dependencies
-      run: pip3 install -U online-judge-verify-helper
+      run: |
+        pip3 install -U online-judge-verify-helper
+        pip3 install -U online-judge-api-client
 
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2
