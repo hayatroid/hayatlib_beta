@@ -17,12 +17,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set up Rust (1.70.0)
-      run: |
-        rustup set profile minimal
-        rustup install 1.70.0
-        rustup override set nightly
-
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2
 
@@ -32,7 +26,7 @@ jobs:
         crate: procon-bundler
         git: https://github.com/ngtkana/procon-bundler
 
-    - name: Run tests
+    - name: Bundle hayatlib to bundle.rs
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |

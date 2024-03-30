@@ -1,4 +1,4 @@
-# https://qiita.com/KakurenboUni/items/b47d9e6e3582e2149d63 が参考になります
+# https://qiita.com/KakurenboUni/items/b47d9e6e3582e2149d63
 
 name: verify
 
@@ -27,30 +27,27 @@ jobs:
     - name: Install dependencies
       run: pip3 install -U online-judge-verify-helper
 
-    # required only if you want to verify Rust code
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
+
     - name: Set up Rust (1.70.0)
       run: |
         rustup set profile minimal
         rustup install 1.70.0
         rustup override set nightly
 
-    # required by cargo-udeps
     - name: Set up Rust (nightly)
       run: |
         rustup set profile minimal
         rustup install nightly
         rustup override set nightly
 
-    # required only if you set `languages.rust.list_dependencies_backend.kind` to `"cargo-udeps"`
     - name: Install cargo-udeps for Rust
       uses: baptiste0928/cargo-install@v3
       with:
         crate: cargo-udeps
         version: '0.1.47'
         args: --debug
-
-    - name: Rust Cache
-      uses: Swatinem/rust-cache@v2
 
     - name: Run tests
       env:
