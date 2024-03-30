@@ -1,0 +1,36 @@
+name: bundle
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Rust (1.70.0)
+      run: |
+        rustup set profile minimal
+        rustup install 1.70.0
+        rustup override set nightly
+
+    - name: Install procon-bundler for Rust
+      uses: baptiste0928/cargo-install@v3
+      with:
+        crate: procon-bundler
+        git: https://github.com/ngtkana/procon-bundler
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Run tests
+      run: procon-bundler bundle hayatlib
