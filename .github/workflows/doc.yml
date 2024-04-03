@@ -9,11 +9,16 @@ on:
 jobs:
   doc:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
 
     if: github.event_name == 'push' || github.event.pull_request.merged == true
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
 
     - name: Run doc
       run: cargo doc --no-deps

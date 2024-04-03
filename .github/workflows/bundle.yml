@@ -15,6 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
+
     - name: Install procon-bundler for Rust
       uses: baptiste0928/cargo-install@v3
       with:
