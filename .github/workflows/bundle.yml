@@ -17,9 +17,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Rust Cache
-      uses: Swatinem/rust-cache@v2
-
     - name: Install procon-bundler for Rust
       uses: baptiste0928/cargo-install@v3
       with:

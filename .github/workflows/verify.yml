@@ -29,9 +29,6 @@ jobs:
         pip3 install -U online-judge-verify-helper
         pip3 install -U online-judge-api-client
 
-    - name: Rust Cache
-      uses: Swatinem/rust-cache@v2
-
     - name: Set up Rust (1.70.0)
       run: |
         rustup set profile minimal
