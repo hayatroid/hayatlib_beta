@@ -9,13 +9,11 @@ mod hayatlib {
         }
     }
     mod polynomial {
-        mod fps {
+        use ac_library::ModInt998244353 as M;
+        mod fps_impl {
             use std::{collections::VecDeque, ops::*};
             use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
-            #[derive(Debug, Clone, PartialEq, Eq)]
-            pub struct FPS {
-                pub coef: Vec<M>
-            }
+            use super::FPS;
             impl From<Vec<M>> for FPS {
                 fn from(value: Vec<M>) -> Self {
                     Self {
@@ -109,7 +107,6 @@ mod hayatlib {
                     *self = self.clone() - rhs;
                 }
             }
-            #[allow(dead_code)]
             impl FPS {
                 pub fn new() -> Self {
                     Self::from([0])
@@ -141,7 +138,6 @@ mod hayatlib {
                     (self.diff() * self.inv(len)).pre(len - 1).integral()
                 }
                 pub fn exp(&self, len: usize) -> Self {
-                    // [x⁰]f = 0 を仮定
                     assert!(self.len() == 0 || self[0].val() == 0);
                     let mut g = Self::from([1]);
                     for i in 1..=len.next_power_of_two().trailing_zeros() {
@@ -204,8 +200,7 @@ mod hayatlib {
                     res
                 }
                 
-                pub fn composition_inv(&self, len: usize) -> Self {
-                    // [x⁰]f = 0, [x¹]f ≠ 0 を仮定
+                pub fn compositional_inv(&self, len: usize) -> Self {
                     assert!(self.len() > 1 && self[0].val() == 0 && self[1].val() != 0);
                     let mut g = Self::from([0, self[1].inv().val()]);
                     for i in 2..=len.next_power_of_two().trailing_zeros() {
@@ -445,6 +440,10 @@ mod hayatlib {
                     Some(pow((b, M::new(1)), (p + 1) / 2).0)
                 }
             }
+        }
+        #[derive(Debug, Clone, PartialEq, Eq)]
+        pub struct FPS {
+            pub coef: Vec<M>
         }
     }
 }
