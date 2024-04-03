@@ -2,8 +2,11 @@ use std::{collections::VecDeque, ops::*};
 
 use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
 
-use super::FPS;
-
+/// 密な形式的冪級数．
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FPS {
+    pub coef: Vec<M>
+}
 
 impl From<Vec<M>> for FPS {
     fn from(value: Vec<M>) -> Self {
