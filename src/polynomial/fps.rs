@@ -138,8 +138,7 @@ impl FPS {
     /// 
     /// # Examples
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([1, 1, 1, 1, 1]);
     /// let g = FPS::from([1, 2, 3, 4]);
     /// assert_eq!(f.diff(), g);
@@ -152,8 +151,7 @@ impl FPS {
     /// 
     /// # Examples
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([1, 2, 3, 4]);
     /// let g = FPS::from([0, 1, 1, 1, 1]);
     /// assert_eq!(f.integral(), g);
@@ -170,8 +168,7 @@ impl FPS {
     /// # Examples
     /// verified with [Inv of Formal Power Series](https://judge.yosupo.jp/problem/inv_of_formal_power_series)
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([5, 4, 3, 2, 1]);
     /// let g = FPS::from([598946612, 718735934, 862483121, 635682004, 163871793]);
     /// assert_eq!(f.inv(5), g);
@@ -194,8 +191,7 @@ impl FPS {
     /// # Examples
     /// verified with [Log of Formal Power Series](https://judge.yosupo.jp/problem/log_of_formal_power_series)
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([1, 1, 499122179, 166374064, 291154613]);
     /// let g = FPS::from([0, 1, 2, 3, 4]);
     /// assert_eq!(f.log(5), g);
@@ -213,8 +209,7 @@ impl FPS {
     /// # Examples
     /// verified with [Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series)
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([0, 1, 2, 3, 4]);
     /// let g = FPS::from([1, 1, 499122179, 166374064, 291154613]);
     /// assert_eq!(f.exp(5), g);
@@ -234,22 +229,19 @@ impl FPS {
     /// # Examples
     /// verified with [Pow of Formal Power Series](https://judge.yosupo.jp/problem/pow_of_formal_power_series)
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([0, 0, 9, 12]);
     /// let g = FPS::from([0, 0, 0, 0]);
     /// assert_eq!(f.pow(3, 4), g);
     /// ```
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([1, 1]);
     /// let g = FPS::from([1, 2]);
     /// assert_eq!(f.pow(2, 2), g);
     /// ```
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([0, 0]);
     /// let g = FPS::from([1, 0]);
     /// assert_eq!(f.pow(0, 2), g);
@@ -279,14 +271,12 @@ impl FPS {
     /// # Examples
     /// verified with [Sqrt of Formal Power Series](https://judge.yosupo.jp/problem/sqrt_of_formal_power_series)
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([0, 0, 9, 12]);
     /// assert_eq!(f.sqrt(4).unwrap().pow(2, 4), f);
     /// ```
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([0, 0, 10, 12]);
     /// assert_eq!(f.sqrt(4), None);
     /// ```
@@ -313,8 +303,7 @@ impl FPS {
     /// # Examples
     /// verified with [Composition of Formal Power Series](https://judge.yosupo.jp/problem/composition_of_formal_power_series)
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([5, 4, 3, 2, 1]);
     /// let g = FPS::from([0, 1, 2, 3, 4]);
     /// let h = FPS::from([5, 4, 11, 26, 59]);
@@ -346,8 +335,7 @@ impl FPS {
     /// # Examples
     /// verified with [Compositional Inverse of Formal Power Series](https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series)
     /// ```
-    /// # use hayatlib::polynomial::fps::FPS;
-    /// # use ac_library::ModInt998244353 as M;
+    /// # use hayatlib::polynomial::FPS;
     /// let f = FPS::from([0, 1, 2, 3, 4]);
     /// let g = FPS::from([0, 1, 998244351, 5, 998244339]);
     /// assert_eq!(f.compositional_inv(5), g);
