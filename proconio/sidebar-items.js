@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["derive_readable","fastout"],"enum":["StdinSource"],"fn":["is_stdin_empty"],"macro":["input","input_interactive"],"mod":["marker","source"]};

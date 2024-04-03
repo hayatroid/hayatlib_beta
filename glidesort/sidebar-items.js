@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["sort","sort_by","sort_by_key","sort_in_vec","sort_in_vec_by","sort_in_vec_by_key","sort_with_buffer","sort_with_buffer_by","sort_with_buffer_by_key","sort_with_vec","sort_with_vec_by","sort_with_vec_by_key"]};

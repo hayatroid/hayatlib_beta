@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Type checked partial references."><title>partial_ref - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="partial_ref" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../static.files/storage-4c98445ec4002617.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../partial_ref/index.html">partial_ref</a><span class="version">0.3.3</span></h2></div><div class="sidebar-elems"><ul class="block">
+            <li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#derives">Derive Macros</a></li></ul></section></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../partial_ref/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">partial_ref</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/partial_ref/lib.rs.html#1-964">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Type checked partial references.</p>
+<p>This crate provides type checked partial references for rust. Type checked partial references
+are one solution to solve <a href="http://smallcultfollowing.com/babysteps/blog/2018/11/01/after-nll-interprocedural-conflicts/">interprocedural borrowing conflicts</a>.</p>
+<h2 id="tutorial"><a class="doc-anchor" href="#tutorial">§</a>Tutorial</h2>
+<p>With this crate it is possible to declare typed parts (using the <a href="macro.part.html" title="macro partial_ref::part"><code>part</code></a> macro) and to assign
+struct fields to these parts (by <a href="../partial_ref_derive/index.html" title="mod partial_ref_derive">deriving <code>PartialRefTarget</code></a>).</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>partial_ref::{part, PartialRefTarget};
+
+<span class="macro">part!</span>(<span class="kw">pub </span>Neighbors: Vec&lt;Vec&lt;usize&gt;&gt;);
+<span class="macro">part!</span>(<span class="kw">pub </span>Colors: Vec&lt;usize&gt;);
+<span class="macro">part!</span>(<span class="kw">pub </span>Weights: Vec&lt;f32&gt;);
+
+<span class="attr">#[derive(PartialRefTarget, Default)]
+</span><span class="kw">pub struct </span>Graph {
+    <span class="attr">#[part(Neighbors)]
+    </span><span class="kw">pub </span>neighbors: Vec&lt;Vec&lt;usize&gt;&gt;,
+    <span class="attr">#[part(Colors)]
+    </span><span class="kw">pub </span>colors: Vec&lt;usize&gt;,
+    <span class="attr">#[part(Weights)]
+    </span><span class="kw">pub </span>weights: Vec&lt;f32&gt;,
+}</code></pre></div>
+<p>It is then possible to convert a reference to a value using the <a href="trait.IntoPartialRef.html" title="trait partial_ref::IntoPartialRef"><code>IntoPartialRef</code></a> and
+<a href="trait.IntoPartialRefMut.html" title="trait partial_ref::IntoPartialRefMut"><code>IntoPartialRefMut</code></a> traits, which are derived alongside PartialRefTarget. Note that a mutable
+partial reference must itself be mutable for mutable access.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>partial_ref::IntoPartialRefMut;
+
+<span class="kw">let </span><span class="kw-2">mut </span>g = Graph::default();
+
+<span class="kw">let </span><span class="kw-2">mut </span>g_ref = g.into_partial_ref_mut();</code></pre></div>
+<p>You can access parts using the <a href="trait.PartialRef.html#method.part" title="method partial_ref::PartialRef::part"><code>part</code></a> and <a href="trait.PartialRef.html#method.part_mut" title="method partial_ref::PartialRef::part_mut"><code>part_mut</code></a>
+methods.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>partial_ref::PartialRef;
+
+g_ref.part_mut(Colors).extend(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]);
+g_ref.part_mut(Weights).extend(<span class="kw-2">&amp;</span>[<span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">0.75</span>]);
+
+g_ref.part_mut(Neighbors).push(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>]);
+g_ref.part_mut(Neighbors).push(<span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">2</span>]);
+g_ref.part_mut(Neighbors).push(<span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">1</span>]);
+
+<span class="macro">assert_eq!</span>(g_ref.part(Colors).len(), g_ref.part(Neighbors).len());
+<span class="macro">assert_eq!</span>(g_ref.part(Colors).len(), g_ref.part(Weights).len());</code></pre></div>
+<p>We can now write a function that takes parts of a reference. The type of such a partial
+reference can be written using the <a href="macro.partial.html" title="macro partial_ref::partial"><code>partial</code></a> macro, which expands to a combination of <a href="struct.Mut.html" title="struct partial_ref::Mut"><code>Mut</code></a>,
+<a href="struct.Const.html" title="struct partial_ref::Const"><code>Const</code></a> and <a href="struct.Ref.html" title="struct partial_ref::Ref"><code>Ref</code></a>. Again the parameter <code>g</code> here must be mutable to allow mutable access to
+the referenced value. To call such a function we use the <a href="trait.PartialRef.html#method.borrow" title="method partial_ref::PartialRef::borrow"><code>borrow</code></a> method,
+which will re-borrow just the required parts.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>partial_ref::partial;
+
+<span class="kw">pub fn </span>add_color_to_weight(
+    <span class="kw-2">mut </span>g: <span class="macro">partial!</span>(Graph, <span class="kw-2">mut </span>Weights, Colors),
+    index: usize,
+) {
+    g.part_mut(Weights)[index] += g.part(Colors)[index] <span class="kw">as </span>f32;
+}
+
+add_color_to_weight(g_ref.borrow(), <span class="number">1</span>);
+
+<span class="macro">assert_eq!</span>(g_ref.part(Weights)[<span class="number">1</span>], <span class="number">1.5</span>);</code></pre></div>
+<p>So far everything could have been written using plain built-in references. This changes as soon
+as we want to iterate over the neighbors while invoking our function. Usually we couldn’t pass a
+mutable reference to the graph while holding the iterator over the neighbors.</p>
+<p>This can be easily done using partial references which support splitting. Splitting means
+turning a single reference into two references where each has a subset of parts, so that each
+mutably referenced part belongs only to a single reference. This is done by the
+<a href="trait.PartialRef.html#method.borrow" title="method partial_ref::PartialRef::borrow"><code>split_borrow</code></a> and <a href="trait.PartialRef.html#method.split_part" title="method partial_ref::PartialRef::split_part"><code>split_part</code></a> methods.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>(neighbors, <span class="kw-2">mut </span>g_ref) = g_ref.split_part_mut(Neighbors);
+<span class="kw">let </span>(colors, <span class="kw-2">mut </span>g_ref) = g_ref.split_part(Colors);
+
+<span class="kw">for </span>(edges, <span class="kw-2">&amp;</span>color) <span class="kw">in </span>neighbors.iter_mut().zip(colors.iter()) {
+    edges.retain(|<span class="kw-2">&amp;</span>neighbor| colors[neighbor] != color);
+
+    <span class="kw">for </span><span class="kw-2">&amp;</span>neighbor <span class="kw">in </span>edges.iter() {
+        add_color_to_weight(g_ref.borrow(), neighbor);
+    }
+}</code></pre></div>
+<p>This covers the basic functionality of this library. Beyond that this library also supports:</p>
+<ul>
+<li>Partial references to nested structs using <a href="struct.Nested.html" title="struct partial_ref::Nested"><code>Nested</code></a> and <a href="macro.nested_part.html" title="macro partial_ref::nested_part"><code>nested_part</code></a>.</li>
+<li>Generic functions with bounds on available parts using <a href="trait.HasPart.html" title="trait partial_ref::HasPart"><code>HasPart</code></a>.</li>
+</ul>
+<h2 id="notes"><a class="doc-anchor" href="#notes">§</a>Notes</h2>
+<p>Some documented items are marked with <em>(internal)</em>. Typical code using this library doesn’t
+explicitly refer to them. Nevertheless they often appear in error messages and are thus part of
+this documentation. These items also have to be public for the inference driven meta programming
+to work. Code that is generic over parts of partial references might also need them.</p>
+<p>Many traits in this crate are marked as unsafe without documenting any requirements for
+implementations. This does not mean they are safe to implement, but rather means that they are
+not intended to be implemented outside of this library. Feel free to file an issue if you have a
+good reason to implement them so the requirements can be documented.</p>
+</div></details><h2 id="macros" class="section-header">Macros<a href="#macros" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="macro" href="macro.nested_part.html" title="macro partial_ref::nested_part">nested_part</a></div><div class="desc docblock-short">Expands <code>A | B | ... | Z</code> to <code>Nested&lt;...Nested&lt;A, B&gt;, ..., Z&gt;</code></div></li><li><div class="item-name"><a class="macro" href="macro.part.html" title="macro partial_ref::part">part</a></div><div class="desc docblock-short">Declares a [<code>Part</code>].</div></li><li><div class="item-name"><a class="macro" href="macro.partial.html" title="macro partial_ref::partial">partial</a></div><div class="desc docblock-short">Concise syntax for partial reference types.</div></li><li><div class="item-name"><a class="macro" href="macro.split_borrow.html" title="macro partial_ref::split_borrow">split_borrow</a></div><div class="desc docblock-short">Helper macro for splitting a partial reference.</div></li></ul><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.AbstractPart.html" title="struct partial_ref::AbstractPart">AbstractPart</a></div><div class="desc docblock-short">Type of an abstract part.</div></li><li><div class="item-name"><a class="struct" href="struct.Const.html" title="struct partial_ref::Const">Const</a></div><div class="desc docblock-short">A constant (immutable) part of a partial reference.</div></li><li><div class="item-name"><a class="struct" href="struct.Field.html" title="struct partial_ref::Field">Field</a></div><div class="desc docblock-short">Type of a part that corresponds to a struct field.</div></li><li><div class="item-name"><a class="struct" href="struct.IndexHere.html" title="struct partial_ref::IndexHere">IndexHere</a></div><div class="desc docblock-short"><em>(internal)</em> Select the first part.</div></li><li><div class="item-name"><a class="struct" href="struct.IndexNext.html" title="struct partial_ref::IndexNext">IndexNext</a></div><div class="desc docblock-short"><em>(internal)</em> Skip the first part.</div></li><li><div class="item-name"><a class="struct" href="struct.IndexSplit.html" title="struct partial_ref::IndexSplit">IndexSplit</a></div><div class="desc docblock-short"><em>(internal)</em> Split the first part.</div></li><li><div class="item-name"><a class="struct" href="struct.Mut.html" title="struct partial_ref::Mut">Mut</a></div><div class="desc docblock-short">A mutable part of a partial reference.</div></li><li><div class="item-name"><a class="struct" href="struct.Nested.html" title="struct partial_ref::Nested">Nested</a></div><div class="desc docblock-short">A nested part.</div></li><li><div class="item-name"><a class="struct" href="struct.Ref.html" title="struct partial_ref::Ref">Ref</a></div><div class="desc docblock-short">An empty partial reference borrowing no parts.</div></li><li><div class="item-name"><a class="struct" href="struct.SubsetIndexCons.html" title="struct partial_ref::SubsetIndexCons">SubsetIndexCons</a></div><div class="desc docblock-short"><em>(internal)</em> Construct a subset index from a part index and another subset index.</div></li><li><div class="item-name"><a class="struct" href="struct.SubsetIndexEnd.html" title="struct partial_ref::SubsetIndexEnd">SubsetIndexEnd</a></div><div class="desc docblock-short"><em>(internal)</em> Index for the empty subset.</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.ContainsNestedPart.html" title="trait partial_ref::ContainsNestedPart">ContainsNestedPart</a></div><div class="desc docblock-short"><em>(internal)</em> Check whether a part is nested inside another part.</div></li><li><div class="item-name"><a class="trait" href="trait.HasPart.html" title="trait partial_ref::HasPart">HasPart</a></div><div class="desc docblock-short">Implemented when a reference target has a part.</div></li><li><div class="item-name"><a class="trait" href="trait.HasSubset.html" title="trait partial_ref::HasSubset">HasSubset</a></div><div class="desc docblock-short"><em>(internal)</em> Asserts that the parts of the partial reference <code>Reference</code> are a subset of the
+parts of the partial reference having this trait.</div></li><li><div class="item-name"><a class="trait" href="trait.HasTarget.html" title="trait partial_ref::HasTarget">HasTarget</a></div><div class="desc docblock-short">Helper trait to associate the target type with a <a href="trait.PartialRef.html" title="trait partial_ref::PartialRef"><code>PartialRef</code></a> without needing a lifetime.</div></li><li><div class="item-name"><a class="trait" href="trait.IntoPartialRef.html" title="trait partial_ref::IntoPartialRef">IntoPartialRef</a></div><div class="desc docblock-short">Construction of partial references.</div></li><li><div class="item-name"><a class="trait" href="trait.IntoPartialRefMut.html" title="trait partial_ref::IntoPartialRefMut">IntoPartialRefMut</a></div><div class="desc docblock-short">Construction of partial references from mutable references.</div></li><li><div class="item-name"><a class="trait" href="trait.Part.html" title="trait partial_ref::Part">Part</a></div><div class="desc docblock-short">Marker types for a part of a type.</div></li><li><div class="item-name"><a class="trait" href="trait.PartSpec.html" title="trait partial_ref::PartSpec">PartSpec</a></div><div class="desc docblock-short">Helper trait to strip lifetimes from a part.</div></li><li><div class="item-name"><a class="trait" href="trait.PartType.html" title="trait partial_ref::PartType">PartType</a></div><div class="desc docblock-short">Type of a part, determines what can be done with a part.</div></li><li><div class="item-name"><a class="trait" href="trait.PartialRef.html" title="trait partial_ref::PartialRef">PartialRef</a></div><div class="desc docblock-short">A partial reference.</div></li><li><div class="item-name"><a class="trait" href="trait.PartialRefTarget.html" title="trait partial_ref::PartialRefTarget">PartialRefTarget</a></div><div class="desc docblock-short">A type that can be the target of partial references.</div></li><li><div class="item-name"><a class="trait" href="trait.PluckConst.html" title="trait partial_ref::PluckConst">PluckConst</a></div><div class="desc docblock-short"><em>(internal)</em> Extracts the constant part <code>PluckedPart</code> at position <code>Index</code> from the partial
+reference having this trait, leaving <code>Self::Remainder</code>.</div></li><li><div class="item-name"><a class="trait" href="trait.PluckMut.html" title="trait partial_ref::PluckMut">PluckMut</a></div><div class="desc docblock-short"><em>(internal)</em> Extracts the mutable part <code>PluckedPart</code> at position <code>Index</code> from the partial
+reference having this trait, leaving <code>Self::Remainder</code>.</div></li><li><div class="item-name"><a class="trait" href="trait.SplitIntoParts.html" title="trait partial_ref::SplitIntoParts">SplitIntoParts</a></div><div class="desc docblock-short"><em>(internal)</em> Split a part into nested parts.</div></li></ul><h2 id="derives" class="section-header">Derive Macros<a href="#derives" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="derive" href="derive.PartialRefTarget.html" title="derive partial_ref::PartialRefTarget">PartialRefTarget</a></div><div class="desc docblock-short">Derives instances of PartialRefTarget and associated traits.</div></li></ul></section></div></main></body></html>

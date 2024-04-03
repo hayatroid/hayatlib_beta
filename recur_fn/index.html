@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A library that provides a more flexible way to construct and extend the recursive function."><title>recur_fn - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="recur_fn" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../static.files/storage-4c98445ec4002617.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../recur_fn/index.html">recur_fn</a><span class="version">2.2.0</span></h2></div><div class="sidebar-elems"><ul class="block">
+            <li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></section></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../recur_fn/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">recur_fn</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/recur_fn/lib.rs.html#1-310">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A library that provides a more flexible way to construct
+and extend the recursive function.</p>
+<p>The <code>RecurFn</code> trait is an abstraction of a recursive function.
+By accepting a function parameter <code>recur</code> as the recursion
+rather than recurring directly, it makes constructing an
+anonymous recursive function possible.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>recur_fn::{recur_fn, RecurFn};
+
+<span class="kw">let </span>fib = recur_fn(|fib, n: i32| {
+    <span class="kw">if </span>n &lt;= <span class="number">1 </span>{
+        n
+    } <span class="kw">else </span>{
+        fib(n - <span class="number">1</span>) + fib(n - <span class="number">2</span>)
+    }
+});
+
+<span class="macro">assert_eq!</span>(<span class="number">55</span>, fib.call(<span class="number">10</span>));</code></pre></div>
+<p>Beside, it makes extending the body of a recursive function possible.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>recur_fn::{recur_fn, RecurFn};
+<span class="kw">use </span>std::cell::RefCell;
+
+<span class="kw">let </span>fib = recur_fn(|fib, n: i32| {
+    <span class="kw">if </span>n &lt;= <span class="number">1 </span>{
+        n
+    } <span class="kw">else </span>{
+        fib(n - <span class="number">1</span>) + fib(n - <span class="number">2</span>)
+    }
+});
+
+<span class="kw">let </span>log = RefCell::new(Vec::new());
+
+<span class="kw">let </span>fib_with_logging = recur_fn(|recur, n: i32| {
+    log.borrow_mut().push(n);
+    fib.body(recur, n)
+});
+
+fib_with_logging.call(<span class="number">3</span>);
+<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>log.borrow(), <span class="macro">vec!</span>[<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>]);</code></pre></div>
+<p>As <code>recur_fn</code> is a convenient way to construct a <code>RecurFn</code>,
+calling it is slower than direct recursion.
+To make it zero-cost, consider defining a struct,
+implementing <code>RecurFn</code> trait for it and mark the <code>body</code> method by <code>#[inline]</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>recur_fn::RecurFn;
+
+<span class="kw">let </span>fib = {
+    <span class="kw">struct </span>Fib {}
+    <span class="kw">impl </span>RecurFn&lt;i32, i32&gt; <span class="kw">for </span>Fib {
+        <span class="attr">#[inline]
+        </span><span class="kw">fn </span>body(<span class="kw-2">&amp;</span><span class="self">self</span>, fib: <span class="kw">impl </span>Fn(i32) -&gt; i32, n: i32) -&gt; i32 {
+            <span class="kw">if </span>n &lt;= <span class="number">1 </span>{
+                n
+            } <span class="kw">else </span>{
+                fib(n - <span class="number">1</span>) + fib(n - <span class="number">2</span>)
+            }
+        }
+    }
+    Fib {}
+};
+
+<span class="macro">assert_eq!</span>(<span class="number">55</span>, fib.call(<span class="number">10</span>));</code></pre></div>
+<p>or if the function doesn’t capture anything,
+you can use <code>recur_fn</code> macro.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>recur_fn::{recur_fn, RecurFn};
+
+<span class="kw">let </span>fact = <span class="macro">recur_fn!</span>(fact(n: i32) -&gt; i32 {
+    <span class="kw">if </span>n == <span class="number">0 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ n * fact(n - <span class="number">1</span>) }
+});
+<span class="macro">assert_eq!</span>(<span class="number">6</span>, fact.call(<span class="number">3</span>));
+<span class="macro">assert_eq!</span>(<span class="number">0</span>,
+    fact.body(|<span class="kw">_</span>| <span class="number">0</span>, <span class="number">3</span>));</code></pre></div>
+<p><code>DynRecurFn</code> is a dynamic version of <code>RecurFn</code>
+that allows you to have a trait object.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>recur_fn::{recur_fn, RecurFn, DynRecurFn};
+<span class="kw">use </span>core::ops::Deref;
+
+<span class="kw">let </span>dyn_fact: <span class="kw-2">&amp;</span><span class="kw">dyn </span>DynRecurFn&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt; =
+    <span class="kw-2">&amp;</span>recur_fn(|fact, n: i32| <span class="kw">if </span>n == <span class="number">0 </span>{ <span class="number">1 </span>} <span class="kw">else </span>{ n * fact(n - <span class="number">1</span>) });</code></pre></div>
+</div></details><h2 id="macros" class="section-header">Macros<a href="#macros" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="macro" href="macro.recur_fn.html" title="macro recur_fn::recur_fn">recur_fn</a></div><div class="desc docblock-short">Expands a function definition to defining a struct,
+implementing <code>RecurFn</code> for the struct and constructing it.
+It can be useful if you want a zero-cost <code>RecurFn</code> implementation.</div></li></ul><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Closure.html" title="struct recur_fn::Closure">Closure</a></div><div class="desc docblock-short">A <code>RecurFn</code> that uses a closure as the body.</div></li><li><div class="item-name"><a class="struct" href="struct.Direct.html" title="struct recur_fn::Direct">Direct</a></div><div class="desc docblock-short">A <code>RecurFn</code> that doesn’t call <code>recur</code> parameter in its body.</div></li><li><div class="item-name"><a class="struct" href="struct.FromPointer.html" title="struct recur_fn::FromPointer">FromPointer</a></div><div class="desc docblock-short">A <code>RecurFn</code> that delegates to a pointer to a <code>RecurFn</code>.</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.DynRecurFn.html" title="trait recur_fn::DynRecurFn">DynRecurFn</a></div><div class="desc docblock-short">The dynamic version of <code>RecurFn</code> that supports trait object.</div></li><li><div class="item-name"><a class="trait" href="trait.RecurFn.html" title="trait recur_fn::RecurFn">RecurFn</a></div><div class="desc docblock-short">The recursive function trait.</div></li></ul><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="fn" href="fn.direct.html" title="fn recur_fn::direct">direct</a></div><div class="desc docblock-short">Constructs a non-recursive <code>RecurFn</code> calling <code>f</code> directly.</div></li><li><div class="item-name"><a class="fn" href="fn.from_pointer.html" title="fn recur_fn::from_pointer">from_pointer</a></div><div class="desc docblock-short">Returns a <code>RecurFn</code> implementation from a pointer
+to <code>RecurFn</code>, i.e. a implementation of <code>Deref</code> whose <code>Target</code>
+implements <code>RecurFn</code>.</div></li><li><div class="item-name"><a class="fn" href="fn.recur_fn.html" title="fn recur_fn::recur_fn">recur_fn</a></div><div class="desc docblock-short">Constructs a <code>RecurFn</code> with the body speicified.</div></li></ul></section></div></main></body></html>

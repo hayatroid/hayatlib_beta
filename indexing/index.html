@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Sound unchecked indexing in Rust using “generativity”; a type system approach to indices, pointers and ranges that are trusted to be in bounds."><title>indexing - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="indexing" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../static.files/storage-4c98445ec4002617.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../indexing/index.html">indexing</a><span class="version">0.4.1</span></h2></div><div class="sidebar-elems"><ul class="block">
+            <li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li></ul></section></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../indexing/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">indexing</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/indexing/lib.rs.html#1-245">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Sound unchecked indexing in Rust using “generativity”; a type system
+approach to indices, pointers and ranges that are trusted to be in bounds.</p>
+<p>We are developing our own “algebra” for transformations of in bounds ranges.</p>
+<p>Apart from trusted single indices and pointers, there are intervals like
+<code>Range&lt;'id, P&gt;</code> (indices) and <code>PRange&lt;'id, T, P&gt;</code> (pointers).</p>
+<p>These particles use marker types to for example enable certain methods only
+for ranges that are known to be nonempty.</p>
+<p><em><strong>This is an experiment.</strong></em> The API is all of inconsistent, incomplete
+and redundant, but it explores interesting concepts.</p>
+<h2 id="basic-parts"><a class="doc-anchor" href="#basic-parts">§</a>Basic Parts</h2>
+<ul>
+<li>
+<p>A scope is created using the <a href="container/fn.scope.html"><code>scope</code></a> function;
+inside this scope, there is a <a href="container/struct.Container.html"><code>Container</code></a> object that has two roles:
+(1) it gives out or vets trusted indices, pointers and ranges (2) it
+provides access to the underlying data through these indices and ranges.</p>
+</li>
+<li>
+<p>The container and its indices and ranges are “branded” with a lifetime
+parameter <code>'id</code> which is an identity marker. Branded items
+can’t leave their scope, and they tie the items uniquely to a particular
+container. This makes it possible to trust them.</p>
+</li>
+<li>
+<p><code>Index&lt;'id&gt;</code> is a trusted index</p>
+</li>
+<li>
+<p><code>Range&lt;'id, P&gt;</code> is a trusted range.</p>
+</li>
+<li>
+<p>For a range, if the proof parameter <code>P</code> is <code>NonEmpty</code>, then the range is
+known to have at least one element. An observation: A non-empty range always
+has a valid front index, so it is interchangeable with the index
+representation.</p>
+</li>
+<li>
+<p>indices and pointers also use the same proof parameter. A <code>NonEmpty</code>
+index points to a valid element, while an <code>Unknown</code> index is an edge
+index (it can be used to slice the container, but not to dereference to
+an element).</p>
+</li>
+<li>
+<p>All ranges have a <code>.first()</code> method to get the first index or pointer
+in the range, but it’s only when the range is nonempty that the returned
+particle is also <code>NonEmpty</code> and thus dereferenceable.</p>
+</li>
+</ul>
+<h2 id="raw-pointers"><a class="doc-anchor" href="#raw-pointers">§</a>Raw Pointers</h2>
+<p>Branded raw pointers work very similarly to indices. However, the code
+needs revision and it’s not of good quality, so it’s not enabled by default.</p>
+<ul>
+<li><code>PIndex&lt;'id, T&gt;</code> and <code>PRange&lt;'id, T, P&gt;</code> are equivalent to <code>Index</code> and
+<code>Range</code>, but they use trusted raw pointers instead.
+There are even two kinds of ranges: <code>PRange</code> uses a begin and end pointer
+representation, and <code>PSlice</code> a begin pointer and length representation.</li>
+</ul>
+<h2 id="borrowing-rules"><a class="doc-anchor" href="#borrowing-rules">§</a>Borrowing Rules</h2>
+<ul>
+<li>The indices, pointers and ranges are freely copyable and do not track
+mutability or exclusive access themselves. All access to the underlying data
+goes through the Container, for example by indexing the container with
+a trusted particle.</li>
+</ul>
+<h2 id="example"><a class="doc-anchor" href="#example">§</a>Example</h2>
+<p>Find the lower bound index for element <code>elt</code> with a binary search using pointer ranges:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>indexing::scope;
+
+<span class="kw">fn </span>lower_bound&lt;T: PartialOrd&gt;(v: <span class="kw-2">&amp;</span>[T], elt: <span class="kw-2">&amp;</span>T) -&gt; usize {
+    scope(v, <span class="kw">move </span>|v| {
+        <span class="kw">let </span><span class="kw-2">mut </span>range = v.range();
+        <span class="kw">while let </span><span class="prelude-val">Ok</span>(range_) = range.nonempty() {
+            <span class="comment">// The upper half of the split range still carries the proof
+            // that it is non-empty, so we can access the element at `b.first()`
+            </span><span class="kw">let </span>(a, b) = range_.split_in_half();
+
+            <span class="comment">// THIS is the only access to the data in the underlying slice;
+            // accessing the first element after the range's split point.
+            // Access uses indexing syntax `v[index]` but note that the access
+            // uses no runtime bounds checking and is guaranteed to be in bounds.
+            </span><span class="kw">if </span>v[b.first()] &lt; <span class="kw-2">*</span>elt {
+                <span class="comment">// A nonempty range has a tail (everything but the first element)
+                </span>range = b.tail();
+            } <span class="kw">else </span>{
+                range = a;
+            }
+        }
+        <span class="comment">// return the start index of the range
+        </span>range.first().integer()
+    })
+}
+
+
+<span class="comment">// Find the lower bound for "2", which is the point exactly between the ones and the twos.
+</span><span class="kw">let </span>data = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];
+<span class="macro">assert_eq!</span>(lower_bound(<span class="kw-2">&amp;</span>data, <span class="kw-2">&amp;</span><span class="number">2</span>), <span class="number">3</span>);</code></pre></div>
+</div></details><h2 id="reexports" class="section-header">Re-exports<a href="#reexports" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name" id="reexport.Container"><code>pub use crate::container::<a class="struct" href="container/struct.Container.html" title="struct indexing::container::Container">Container</a>;</code></div></li><li><div class="item-name" id="reexport.scope"><code>pub use crate::container::<a class="fn" href="container/fn.scope.html" title="fn indexing::container::scope">scope</a>;</code></div></li><li><div class="item-name" id="reexport.NonEmpty"><code>pub use crate::proof::<a class="enum" href="proof/enum.NonEmpty.html" title="enum indexing::proof::NonEmpty">NonEmpty</a>;</code></div></li><li><div class="item-name" id="reexport.Unknown"><code>pub use crate::proof::<a class="enum" href="proof/enum.Unknown.html" title="enum indexing::proof::Unknown">Unknown</a>;</code></div></li></ul><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="mod" href="algorithms/index.html" title="mod indexing::algorithms">algorithms</a></div><div class="desc docblock-short">Respository of some indexing-implemented algorithms so we can dissect them
+and their codegen.</div></li><li><div class="item-name"><a class="mod" href="container/index.html" title="mod indexing::container">container</a></div></li><li><div class="item-name"><a class="mod" href="container_traits/index.html" title="mod indexing::container_traits">container_traits</a></div></li><li><div class="item-name"><a class="mod" href="indexing/index.html" title="mod indexing::indexing">indexing</a></div></li><li><div class="item-name"><a class="mod" href="pointer/index.html" title="mod indexing::pointer">pointer</a></div><div class="desc docblock-short">Pointer-based inbounds intervals and element references.</div></li><li><div class="item-name"><a class="mod" href="proof/index.html" title="mod indexing::proof">proof</a></div></li></ul><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Index.html" title="struct indexing::Index">Index</a></div><div class="desc docblock-short">A branded index.</div></li><li><div class="item-name"><a class="struct" href="struct.IndexingError.html" title="struct indexing::IndexingError">IndexingError</a></div><div class="desc docblock-short">Error produced when an indexing operation is out of bounds or otherwise
+inapplicable.</div></li><li><div class="item-name"><a class="struct" href="struct.Range.html" title="struct indexing::Range">Range</a></div><div class="desc docblock-short">A branded range.</div></li></ul></section></div></main></body></html>

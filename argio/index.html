@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A macro to convert function input and output to stdio"><title>argio - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="argio" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../static.files/storage-4c98445ec4002617.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../argio/index.html">argio</a><span class="version">0.2.0</span></h2></div><div class="sidebar-elems"><ul class="block">
+            <li><a id="all-types" href="all.html">All Items</a></li></ul><section><ul class="block"><li><a href="#reexports">Re-exports</a></li><li><a href="#attributes">Attribute Macros</a></li></ul></section></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../argio/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Crate <a class="mod" href="#">argio</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/argio/lib.rs.html#1-153">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A macro to convert function input and output to stdio</p>
+<p>This macro changes the arguments and return value of a function to take them from standard input and output.</p>
+
+<div class="example-wrap should_panic"><a href="#" class="tooltip" title="This example panics">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[argio]
+</span><span class="kw">fn </span>main(n: i32) -&gt; i32 {
+    n * <span class="number">2
+</span>}</code></pre></div>
+<p>Instead of taking an integer as an argument, this function reads an integer from the standard input and outputs the result to the standard output.</p>
+<p>Because this macro uses <a href="https://crates.io/crates/proconio">proconio</a> as a backend for input, you can put the same arguments as those that can be passed to the <code>input!</code> macro of <code>proconio</code> in the function (even if they are not the correct syntax for Rust).</p>
+
+<div class="example-wrap should_panic"><a href="#" class="tooltip" title="This example panics">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[argio]
+</span><span class="kw">fn </span>main(n: usize, x: [i64; n]) -&gt; i64 {
+    x.into_iter().sum()
+}</code></pre></div>
+<p>This function takes such an input</p>
+<div class="example-wrap"><pre class="language-text"><code>N
+x_1 x_2 ... x_N
+</code></pre></div>
+<p>from the standard input and outputs the sum to the standard output.</p>
+<p>You can change the macro for the input by setting the <code>input</code> parameter. A macro takes the arguments of the function as they are.</p>
+
+<div class="example-wrap compile_fail"><a href="#" class="tooltip" title="This example deliberately fails to compile">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">macro_rules! </span>my_input {
+    ...
+}
+
+<span class="attr">#[argio(input = my_input)]
+</span><span class="kw">fn </span>main(n: usize, x: [i64; n]) -&gt; i64 {
+    x.into_iter().sum()
+}</code></pre></div>
+<p>Because the <code>Display</code> trait is used to display the return value, functions such as <code>Vec</code> which does not implement the <code>Display</code> trait cannot be compiled as it is.</p>
+<p>You can customize the behavior of the output by using a wrapper struct that implements the <code>Display</code> trait.</p>
+
+<div class="example-wrap should_panic"><a href="#" class="tooltip" title="This example panics">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">struct </span>Wrap&lt;T&gt;(T);
+
+<span class="kw">impl</span>&lt;T: Display&gt; Display <span class="kw">for </span>Wrap&lt;Vec&lt;T&gt;&gt; {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">for </span>(ix, r) <span class="kw">in </span><span class="self">self</span>.<span class="number">0</span>.iter().enumerate() {
+            <span class="kw">if </span>ix &gt; <span class="number">0 </span>{
+                <span class="macro">write!</span>(f, <span class="string">" "</span>)<span class="question-mark">?</span>;
+            }
+            r.fmt(f)<span class="question-mark">?</span>;
+        }
+        <span class="prelude-val">Ok</span>(())
+    }
+}
+
+<span class="attr">#[argio]
+</span><span class="kw">fn </span>main(n: usize) -&gt; Wrap&lt;Vec&lt;usize&gt;&gt; {
+    Wrap((<span class="number">0</span>..n).map(|i| i * <span class="number">2</span>).collect())
+}</code></pre></div>
+<div class="example-wrap"><pre class="language-text"><code>$ echo 10 | cargo run
+0 2 4 6 8 10 12 14 16 18
+</code></pre></div>
+<p>Of course, you can also output manually. If the return value of the function is <code>()</code>, it does not output anything to the standard output, so you can output it manually and return <code>()</code>.</p>
+
+<div class="example-wrap should_panic"><a href="#" class="tooltip" title="This example panics">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[argio]
+</span><span class="kw">fn </span>main(n: usize) {
+    <span class="kw">let </span>ans = (<span class="number">0</span>..n).map(|i| i * <span class="number">2</span>).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    <span class="kw">for </span>(i, x) <span class="kw">in </span>ans.into_iter().enumerate() {
+        <span class="kw">if </span>i &gt; <span class="number">0 </span>{
+            <span class="macro">print!</span>(<span class="string">" "</span>);
+        }
+        <span class="macro">print!</span>(<span class="string">"{}"</span>, x);
+    }
+    <span class="macro">println!</span>();
+}</code></pre></div>
+<p>You can also specify a wrapper for the output from a macro parameter. This has the advantage of removing information about the wrapper from the code, allowing you to move the output customization to the template part of the code.</p>
+
+<div class="example-wrap should_panic"><a href="#" class="tooltip" title="This example panics">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[argio(output = Wrap)]
+</span><span class="kw">fn </span>main(n: usize) -&gt; Vec&lt;usize&gt; {
+    (<span class="number">0</span>..n).map(|i| i * <span class="number">2</span>).collect()
+}</code></pre></div>
+<p>If <code>multicase</code> is specified as an attribute, it can be used to automatically execute multiple inputs for multiple cases that start with the number of cases.</p>
+<p>The value of the attribute <code>multicase</code> is a string to be displayed at the top of each case. The variable <code>i</code> contains the case number of 0 origin, so you can customize the display by using it.</p>
+
+<div class="example-wrap should_panic"><a href="#" class="tooltip" title="This example panics">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[argio(multicase = <span class="string">"Case #{i+1}: "</span>, output = Wrap)]
+</span><span class="kw">fn </span>main(n: usize) -&gt; Vec&lt;usize&gt; {
+    (<span class="number">0</span>..n).map(|i| i * <span class="number">2</span>).collect()
+}</code></pre></div>
+<div class="example-wrap"><pre class="language-text"><code>$ echo &quot;3 2 3 5&quot; | cargo run
+Case #1: 0 2
+Case #2: 0 2 4
+Case #3: 0 2 4 6 8
+</code></pre></div></div></details><h2 id="reexports" class="section-header">Re-exports<a href="#reexports" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name" id="reexport.proconio"><code>pub use <a class="mod" href="../proconio/index.html" title="mod proconio">proconio</a>;</code></div></li></ul><h2 id="attributes" class="section-header">Attribute Macros<a href="#attributes" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="attr" href="attr.argio.html" title="attr argio::argio">argio</a></div><div class="desc docblock-short">A macro to convert function input and output to stdio</div></li></ul></section></div></main></body></html>
