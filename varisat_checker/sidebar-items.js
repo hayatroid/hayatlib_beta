@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["CheckedProofStep","CheckedSamplingMode","CheckerError","ProofTranscriptStep"],"mod":["internal"],"struct":["CheckedUserVar","Checker","CheckerData","ResolutionPropagations"],"trait":["ProofProcessor","ProofTranscriptProcessor"]};

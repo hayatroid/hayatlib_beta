@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["checker","cnf","config","dimacs","lit","solver"],"struct":["CnfFormula","Lit","Var"],"trait":["ExtendFormula"]};

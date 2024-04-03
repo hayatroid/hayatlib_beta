@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"attr":["memoise","memoise_map"]};

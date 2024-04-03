@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["AllSet","FilteredIter","FlagRef","FlagVec","ParseError"],"type":["FlagNo"]};

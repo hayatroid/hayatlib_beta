@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Bytes","Chars","Isize1","Usize1"]};

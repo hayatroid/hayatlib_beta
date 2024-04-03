@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["auto","line","once"],"trait":["Readable","Source"]};

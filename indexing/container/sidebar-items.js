@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["OnlyIndex"],"fn":["scope"],"struct":["Container"]};

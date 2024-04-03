@@ -1,20 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/polynomial/fps.rs`."><title>fps.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hayatlib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        renderMathInElement(document.body, {
-            delimiters: [
-                {left: "$$", right: "$$", display: true},
-                {left: "\\(", right: "\\)", display: false},
-                {left: "$", right: "$", display: false},
-                {left: "\\[", right: "\\]", display: true}
-            ]
-        });
-    });
-</script>
-
-</head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/polynomial/fps.rs`."><title>fps.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hayatlib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../hayatlib/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -748,12 +732,12 @@
         <span class="self">self</span>.coef.len()
     }
 
-    <span class="doccomment">/// $f(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $f(x)$ の先頭 $\mathrm{len}$ 項を返す．
     </span><span class="kw">pub fn </span>pre(<span class="kw-2">&amp;</span><span class="self">self</span>, len: usize) -&gt; <span class="self">Self </span>{
         (<span class="number">0</span>..len).map(|i| <span class="kw">if </span>i &lt; <span class="self">self</span>.len() { <span class="self">self</span>[i] } <span class="kw">else </span>{ M::new(<span class="number">0</span>) }).collect()
     }
     
-    <span class="doccomment">/// $f\'(x)$ を返す．$\\mathrm{len}$ が $1$ 減る．
+    <span class="doccomment">/// $f\'(x)$ を返す．$\mathrm{len}$ が $1$ 減る．
     /// 
     /// # Examples
     /// ```
@@ -766,7 +750,7 @@
         (<span class="number">1</span>..<span class="self">self</span>.len()).map(|i| <span class="self">self</span>[i] * i).collect()
     }
 
-    <span class="doccomment">/// $\\int_0^x f(x) dx$ を返す．$\\mathrm{len}$ が $1$ 増える．
+    <span class="doccomment">/// $\int_0^x f(x) dx$ を返す．$\mathrm{len}$ が $1$ 増える．
     /// 
     /// # Examples
     /// ```
@@ -779,7 +763,7 @@
         (<span class="number">0</span>..<span class="self">self</span>.len()).map(|i| <span class="self">self</span>[i] / (i + <span class="number">1</span>)).collect::&lt;<span class="self">Self</span>&gt;() &lt;&lt; <span class="number">1
     </span>}
 
-    <span class="doccomment">/// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Panics
     /// $[x^0]f(x) = 0$ のとき panic する．
@@ -802,10 +786,10 @@
         g.pre(len)
     }
 
-    <span class="doccomment">/// $\\int_0^x \\frac{f\'(x)}{f(x)} dx$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $\int_0^x \frac{f\'(x)}{f(x)} dx$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Panics
-    /// $[x^0]f(x) \\neq 1$ のとき panic する．
+    /// $[x^0]f(x) \neq 1$ のとき panic する．
     /// 
     /// # Examples
     /// verified with [Log of Formal Power Series](https://judge.yosupo.jp/problem/log_of_formal_power_series)
@@ -820,10 +804,10 @@
         (<span class="self">self</span>.diff() * <span class="self">self</span>.inv(len)).pre(len - <span class="number">1</span>).integral()
     }
 
-    <span class="doccomment">/// $\\log g(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $\log g(x) = f(x)$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ のとき panic する．
+    /// $[x^0]f(x) \neq 0$ のとき panic する．
     /// 
     /// # Examples
     /// verified with [Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series)
@@ -843,7 +827,7 @@
         g.pre(len)
     }
 
-    <span class="doccomment">/// $f^m(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $f^m(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Examples
     /// verified with [Pow of Formal Power Series](https://judge.yosupo.jp/problem/pow_of_formal_power_series)
@@ -884,7 +868,7 @@
         g
     }
 
-    <span class="doccomment">/// $g^2(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $g^2(x) = f(x)$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// そのような $g(x)$ が存在しない場合は `None` を返す．
     /// 
     /// # Examples
@@ -917,7 +901,7 @@
         <span class="prelude-val">Some</span>(g)
     }
 
-    <span class="doccomment">/// $f \\circ g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $f \circ g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Examples
     /// verified with [Composition of Formal Power Series](https://judge.yosupo.jp/problem/composition_of_formal_power_series)
@@ -947,9 +931,9 @@
         res
     }
     
-    <span class="doccomment">/// $f \\circ g(x) = x$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    <span class="doccomment">/// $f \circ g(x) = x$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ または $[x^1]f(x) = 0$ のとき panic する．
+    /// $[x^0]f(x) \neq 0$ または $[x^1]f(x) = 0$ のとき panic する．
     /// 
     /// # Examples
     /// verified with [Compositional Inverse of Formal Power Series](https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series)
