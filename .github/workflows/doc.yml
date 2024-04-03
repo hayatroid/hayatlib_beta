@@ -10,7 +10,8 @@ jobs:
   doc:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      contents: read
+      pages: write
 
     if: github.event_name == 'push' || github.event.pull_request.merged == true
 
