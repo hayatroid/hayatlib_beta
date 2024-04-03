@@ -31,7 +31,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["glidesort",["",[],["branchless_merge.rs","gap_guard.rs","glidesort.rs","lib.rs","merge_reduction.rs","mut_slice.rs","physical_merges.rs","pivot_selection.rs","powersort.rs","small_sort.rs","stable_quicksort.rs","tracking.rs","util.rs"]]],\
 ["hashbag",["",[],["lib.rs"]]],\
 ["hashbrown",["",[["external_trait_impls",[],["mod.rs"]],["raw",[],["alloc.rs","bitmask.rs","mod.rs","sse2.rs"]]],["lib.rs","macros.rs","map.rs","scopeguard.rs","set.rs","table.rs"]]],\
-["hayatlib",["",[["polynomial",[],["fps.rs"]]],["lib.rs","polynomial.rs","sample.rs"]]],\
+["hayatlib",["",[["polynomial",[],["fps_impl.rs"]]],["lib.rs","polynomial.rs","sample.rs"]]],\
 ["im_rc",["",[["hash",[],["map.rs","mod.rs","set.rs"]],["nodes",[],["btree.rs","hamt.rs","mod.rs","rrb.rs"]],["ord",[],["map.rs","mod.rs","set.rs"]],["vector",[],["focus.rs","mod.rs","pool.rs"]]],["config.rs","fakepool.rs","iter.rs","lib.rs","sort.rs","sync.rs","util.rs"]]],\
 ["indexing",["",[],["algorithms.rs","container.rs","container_traits.rs","index_error.rs","indexing.rs","lib.rs","macro_utils.rs","pointer.rs","pointer_ext.rs","proof.rs"]]],\
 ["indexmap",["",[["map",[["core",[],["entry.rs","raw.rs","raw_entry_v1.rs"]]],["core.rs","iter.rs","mutable.rs","slice.rs"]],["set",[],["iter.rs","mutable.rs","slice.rs"]]],["arbitrary.rs","lib.rs","macros.rs","map.rs","set.rs","util.rs"]]],\
