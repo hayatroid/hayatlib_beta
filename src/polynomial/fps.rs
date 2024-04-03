@@ -1,3 +1,5 @@
+//! 密な形式的冪級数．
+
 use std::{collections::VecDeque, ops::*};
 
 use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
