@@ -9,11 +9,13 @@ mod hayatlib {
         }
     }
     mod polynomial {
-        use ac_library::ModInt998244353 as M;
-        mod fps_impl {
+        mod fps {
             use std::{collections::VecDeque, ops::*};
             use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
-            use super::FPS;
+            #[derive(Debug, Clone, PartialEq, Eq)]
+            pub struct FPS {
+                pub coef: Vec<M>
+            }
             impl From<Vec<M>> for FPS {
                 fn from(value: Vec<M>) -> Self {
                     Self {
@@ -441,10 +443,7 @@ mod hayatlib {
                 }
             }
         }
-        #[derive(Debug, Clone, PartialEq, Eq)]
-        pub struct FPS {
-            pub coef: Vec<M>
-        }
+        pub use fps::FPS;
     }
 }
 // }}}
