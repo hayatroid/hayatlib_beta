@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["fps_impl"],"struct":["FPS"]};
+window.SIDEBAR_ITEMS = {"mod":["fps"]};
