@@ -129,12 +129,12 @@ impl FPS {
         self.coef.len()
     }
 
-    /// $f(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $f(x)$ の先頭 $\mathrm{len}$ 項を返す．
     pub fn pre(&self, len: usize) -> Self {
         (0..len).map(|i| if i < self.len() { self[i] } else { M::new(0) }).collect()
     }
     
-    /// $f\'(x)$ を返す．$\\mathrm{len}$ が $1$ 減る．
+    /// $f\'(x)$ を返す．$\mathrm{len}$ が $1$ 減る．
     /// 
     /// # Examples
     /// ```
@@ -147,7 +147,7 @@ impl FPS {
         (1..self.len()).map(|i| self[i] * i).collect()
     }
 
-    /// $\\int_0^x f(x) dx$ を返す．$\\mathrm{len}$ が $1$ 増える．
+    /// $\int_0^x f(x) dx$ を返す．$\mathrm{len}$ が $1$ 増える．
     /// 
     /// # Examples
     /// ```
@@ -160,7 +160,7 @@ impl FPS {
         (0..self.len()).map(|i| self[i] / (i + 1)).collect::<Self>() << 1
     }
 
-    /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $f(x)g(x) = 1$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Panics
     /// $[x^0]f(x) = 0$ のとき panic する．
@@ -183,10 +183,10 @@ impl FPS {
         g.pre(len)
     }
 
-    /// $\\int_0^x \\frac{f\'(x)}{f(x)} dx$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $\int_0^x \frac{f\'(x)}{f(x)} dx$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Panics
-    /// $[x^0]f(x) \\neq 1$ のとき panic する．
+    /// $[x^0]f(x) \neq 1$ のとき panic する．
     /// 
     /// # Examples
     /// verified with [Log of Formal Power Series](https://judge.yosupo.jp/problem/log_of_formal_power_series)
@@ -201,10 +201,10 @@ impl FPS {
         (self.diff() * self.inv(len)).pre(len - 1).integral()
     }
 
-    /// $\\log g(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $\log g(x) = f(x)$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ のとき panic する．
+    /// $[x^0]f(x) \neq 0$ のとき panic する．
     /// 
     /// # Examples
     /// verified with [Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series)
@@ -224,7 +224,7 @@ impl FPS {
         g.pre(len)
     }
 
-    /// $f^m(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $f^m(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Examples
     /// verified with [Pow of Formal Power Series](https://judge.yosupo.jp/problem/pow_of_formal_power_series)
@@ -265,7 +265,7 @@ impl FPS {
         g
     }
 
-    /// $g^2(x) = f(x)$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $g^2(x) = f(x)$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// そのような $g(x)$ が存在しない場合は `None` を返す．
     /// 
     /// # Examples
@@ -298,7 +298,7 @@ impl FPS {
         Some(g)
     }
 
-    /// $f \\circ g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $f \circ g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// 
     /// # Examples
     /// verified with [Composition of Formal Power Series](https://judge.yosupo.jp/problem/composition_of_formal_power_series)
@@ -328,9 +328,9 @@ impl FPS {
         res
     }
     
-    /// $f \\circ g(x) = x$ なる $g(x)$ の先頭 $\\mathrm{len}$ 項を返す．
+    /// $f \circ g(x) = x$ なる $g(x)$ の先頭 $\mathrm{len}$ 項を返す．
     /// # Panics
-    /// $[x^0]f(x) \\neq 0$ または $[x^1]f(x) = 0$ のとき panic する．
+    /// $[x^0]f(x) \neq 0$ または $[x^1]f(x) = 0$ のとき panic する．
     /// 
     /// # Examples
     /// verified with [Compositional Inverse of Formal Power Series](https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series)
