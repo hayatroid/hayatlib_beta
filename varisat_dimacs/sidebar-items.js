@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ParserError"],"fn":["write_dimacs","write_dimacs_clauses","write_dimacs_header"],"struct":["DimacsHeader","DimacsParser"]};

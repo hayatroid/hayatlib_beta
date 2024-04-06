@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["crt","floor_sum","inv_mod","pow_mod"]};

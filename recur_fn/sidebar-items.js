@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["direct","from_pointer","recur_fn"],"macro":["recur_fn"],"struct":["Closure","Direct","FromPointer"],"trait":["DynRecurFn","RecurFn"]};

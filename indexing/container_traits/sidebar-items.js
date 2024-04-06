@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"trait":["Contiguous","ContiguousMut","FixedLength","GetUnchecked","GetUncheckedMut","IndexRange","OnePointRange","Pushable","Trustworthy"]};

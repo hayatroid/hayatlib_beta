@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["linspace"],"mod":["structs"],"trait":["ItertoolsNum"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["DeleteClauseProof","ProofStep"],"fn":["clause_hash","lit_code_hash","lit_hash"],"mod":["binary_format"],"type":["ClauseHash"]};

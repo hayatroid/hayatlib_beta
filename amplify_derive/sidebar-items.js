@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"derive":["AsAny","Display","Error","From","Getters","Wrapper"]};

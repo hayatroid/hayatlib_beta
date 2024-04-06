@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["NonEmpty","Unknown"],"trait":["ProofAdd","Provable"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"externcrate":["alloc","paste"],"macro":["impl_into_stringly","impl_into_stringly_standard","impl_try_from_stringly","impl_try_from_stringly_standard"]};

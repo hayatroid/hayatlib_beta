@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MAXHEAP"],"fn":["factorial","heap_recursive"],"mod":["control"],"struct":["Heap"],"trait":["LexicalPermutation"]};

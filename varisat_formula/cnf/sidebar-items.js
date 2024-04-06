@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["CnfFormula","NewVarIter"],"trait":["ExtendFormula","UniformTuple"]};

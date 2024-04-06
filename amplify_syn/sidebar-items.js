@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ArgValue","ArgValueReq","Attr","Error","ListReq","LiteralClass","MetaArg","TypeClass","ValueClass","ValueReq"],"macro":["ident"],"struct":["AttrReq","MetaArgList","MetaArgNameValue","ParametrizedAttr","SingularAttr"]};
