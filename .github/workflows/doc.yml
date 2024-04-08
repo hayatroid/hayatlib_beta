@@ -18,6 +18,9 @@ jobs:
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2
 
+    - name: Clean doc
+      run: cargo clean --doc
+
     - name: Run doc (KaTeX)
       run: RUSTDOCFLAGS="--html-in-header katex-header.html" cargo doc --no-deps --open
 
@@ -25,4 +28,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./target/doc/hayatlib/
+        publish_dir: ./target/doc/
