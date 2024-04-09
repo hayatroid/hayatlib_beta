@@ -13,8 +13,6 @@ pub struct HLD {
 
 impl HLD {
     /// 根付き木 $G$，根 $\mathrm{root}$ を受け取り，重軽分解する．
-    /// 
-    /// `g` は $G$ の隣接リストを，`root` は $\mathrm{root}$ を表す．
     pub fn new(g: &Vec<Vec<usize>>, root: usize) -> Self {
         let n = g.len();
         let mut res = Self {
