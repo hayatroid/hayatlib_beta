@@ -20,7 +20,7 @@ fn main() {
 
     let mut seg: Segtree<Additive<u64>> = Segtree::new(n);
     for (i, &a) in a.iter().enumerate() {
-        seg.set(hld.pos[i], a);
+        seg.set(hld.pos(i), a);
     }
     
     for _ in 0..q {
@@ -33,7 +33,7 @@ fn main() {
                 x: u64,
             }
             a[u] += x;
-            seg.set(hld.pos[u], a[u]);
+            seg.set(hld.pos(u), a[u]);
         } else {
             input! {
                 u: usize,
