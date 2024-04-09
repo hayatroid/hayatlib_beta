@@ -152,7 +152,6 @@
 <a href="#134" id="134">134</a>
 <a href="#135" id="135">135</a>
 <a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 重軽分解．
 
 </span><span class="kw">use </span>std::ops::{Range, RangeInclusive};
@@ -168,6 +167,7 @@
 
 <span class="kw">impl </span>HLD {
     <span class="doccomment">/// $\mathrm{root}$ を根とする木 $G$ を受け取り，重軽分解をする．
+    /// 
     /// `g` は $G$ の隣接グラフを，`root` は $\mathrm{root}$ を表す．
     </span><span class="kw">pub fn </span>new(g: <span class="kw-2">&amp;</span>Vec&lt;Vec&lt;usize&gt;&gt;, root: usize) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>n = g.len();
@@ -220,7 +220,7 @@
         <span class="self">self</span>.pos[u]
     }
 
-    <span class="doccomment">/// $G$ の頂点 $u,\, v$ の最小共通祖先を返す．
+    <span class="doccomment">/// $G$ の頂点 $u, v$ の最小共通祖先を返す．
     </span><span class="kw">pub fn </span>lca(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; usize {
         <span class="kw">while </span><span class="self">self</span>.head[u] != <span class="self">self</span>.head[v] {
             <span class="kw">if </span><span class="self">self</span>.pos[u] &gt; <span class="self">self</span>.pos[v] {
@@ -235,14 +235,14 @@
     }
 
     <span class="doccomment">/// $G$ 上の $u$ から $v$ へのパスに対応する $\mathrm{HLD}$ 上の区間の集合を返す．
-    /// `up` は $u$ から $\mathrm{LCA}(u,\, v)$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で逆順である）．
-    /// `down` は $\mathrm{LCA}(u,\, v)$ から $v$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で正順である）．
+    /// 
+    /// `up` は $u$ から $\mathrm{LCA}(u, v)$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で逆順である）．
+    /// 
+    /// `down` は $\mathrm{LCA}(u, v)$ から $v$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で正順である）．
     /// 
     /// # Examples
     /// 可換な場合は，そのまま処理する．
     /// ```
-    /// // let (up, down) = hld.path(u, v);
-    /// //
     /// // let mut ans = e();
     /// // for range in up {
     /// //     ans = op(ans, seg.prod(range));
@@ -254,8 +254,6 @@
     /// 
     /// 非可換な場合は，逆順のセグ木を持つなどして処理する．
     /// ```
-    /// // let (up, down) = hld.path(u, v);
-    /// //
     /// // let mut ans = e();
     /// // for range in up {
     /// //     ans = op(ans, seg_rev.prod(n - 1 - range.end()..=n - 1 - range.start()));
