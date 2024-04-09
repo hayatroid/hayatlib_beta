@@ -1,3 +1,5 @@
+//! 平方剰余
+
 use ac_library::ModInt as M;
 
 /// $X^2 \equiv Y \pmod p$ なる $X$ を返す．
