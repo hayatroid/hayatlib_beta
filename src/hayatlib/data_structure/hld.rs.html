@@ -153,7 +153,7 @@
 
 </span><span class="kw">use </span>std::ops::{Range, RangeInclusive};
 
-<span class="doccomment">/// 重軽分解
+<span class="doccomment">/// 重軽分解．
 </span><span class="kw">pub struct </span>HLD {
     g: Vec&lt;Vec&lt;usize&gt;&gt;,
     size: Vec&lt;usize&gt;,
@@ -277,7 +277,7 @@
         (up, down)
     }
 
-    <span class="doccomment">/// $G$ 上の $u$ の部分木を，$\mathrm{HLD}$ 上の区間と対応させる．
+    <span class="doccomment">/// $G$ 上の $u$ を根とする部分木に対応する，$\mathrm{HLD}$ 上の区間を返す．
     </span><span class="kw">pub fn </span>subtree(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; Range&lt;usize&gt; {
         <span class="self">self</span>.pos[u]..<span class="self">self</span>.pos[u] + <span class="self">self</span>.size[u]
     }
