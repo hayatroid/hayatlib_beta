@@ -1,4 +1,4 @@
-name: verify
+name: verify & bundle & doc
 on:
   push:
     branches:
@@ -145,3 +145,22 @@ jobs:
         else
           echo "No changes found in bundle.rs"
         fi
+
+  doc:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: Clean doc
+      run: cargo clean --doc
+  
+    - name: Generate doc
+      run: RUSTDOCFLAGS="--html-in-header katex-header.html" cargo doc --no-deps
+  
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/doc/
