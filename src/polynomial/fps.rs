@@ -4,6 +4,8 @@ use std::{collections::VecDeque, ops::*};
 
 use ac_library::{convolution, ModInt998244353 as M, RemEuclidU32};
 
+use crate::math::sqrt_mod;
+
 /// 密な形式的冪級数．
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FPS {
@@ -289,7 +291,7 @@ impl FPS {
             return None;
         }
         let f = self.clone() >> p;
-        let mut g = Self::from([a_p.sqrt()?.val()]);
+        let mut g = Self::from([sqrt_mod(a_p.val(), M::modulus())?]);
         for i in 1..=(len - p / 2).next_power_of_two().trailing_zeros() {
             // g ← (g + f/g) / 2
             g = (g.clone() + (f.pre(1 << i) * g.inv(1 << i)).pre(1 << i)) / M::new(2);
@@ -560,42 +562,5 @@ impl FPS {
         let y = (0..m).map(|i| fact_inv[i]).collect::<Self>();
         let z = x * y;
         (0..m).map(|i| z[i] * fact[i]).collect()
-    }
-}
-
-trait Mod998Traits {
-    fn sqrt(&self) -> Option<M>;
-}
-
-impl Mod998Traits for M {
-    // Cipolla のアルゴリズム ( https://37zigen.com/cipolla-algorithm/ )
-    fn sqrt(&self) -> Option<M> {
-        if self.val() == 0 {
-            return Some(M::new(0));
-        }
-        let p = M::modulus() as u64;
-        if self.pow((p - 1) / 2).val() != 1 {
-            return None;
-        }
-        let b: M = (0..).find(|&i| (M::new(i) * i - self).pow((p - 1) / 2).val() != 1).unwrap().into();
-        let base = b * b - self;
-        let mul = |a: (M, M), b: (M, M)| -> (M, M) {
-            (
-                a.0 * b.0 + a.1 * b.1 * base,
-                a.0 * b.1 + a.1 * b.0,
-            )
-        };
-        let pow = |mut a: (M, M), mut m: u64| -> (M, M) {
-            let mut res = (M::new(1), M::new(0));
-            while m > 0 {
-                if m & 1 == 1 {
-                    res = mul(res, a);
-                }
-                a = mul(a, a);
-                m >>= 1;
-            }
-            res
-        };
-        Some(pow((b, M::new(1)), (p + 1) / 2).0)
     }
 }
