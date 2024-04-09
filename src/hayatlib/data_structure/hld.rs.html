@@ -106,14 +106,29 @@
 <a href="#88" id="88">88</a>
 <a href="#89" id="89">89</a>
 <a href="#90" id="90">90</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>std::ops::{Range, RangeInclusive};
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+</pre></div><pre class="rust"><code><span class="doccomment">//! 重軽分解．
 
-<span class="kw">pub struct </span>HLD {
+</span><span class="kw">use </span>std::ops::{Range, RangeInclusive};
+
+<span class="doccomment">/// 重軽分解
+</span><span class="kw">pub struct </span>HLD {
     g: Vec&lt;Vec&lt;usize&gt;&gt;,
     size: Vec&lt;usize&gt;,
     parent: Vec&lt;usize&gt;,
     head: Vec&lt;usize&gt;,
-    <span class="kw">pub </span>pos: Vec&lt;usize&gt;,
+    pos: Vec&lt;usize&gt;,
 }
 
 <span class="kw">impl </span>HLD {
@@ -163,6 +178,10 @@
         }
     }
 
+    <span class="kw">pub fn </span>pos(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; usize {
+        <span class="self">self</span>.pos[u]
+    }
+
     <span class="kw">pub fn </span>lca(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; usize {
         <span class="kw">while </span><span class="self">self</span>.head[u] != <span class="self">self</span>.head[v] {
             <span class="kw">if </span><span class="self">self</span>.pos[u] &gt; <span class="self">self</span>.pos[v] {
@@ -176,20 +195,25 @@
         u
     }
 
-    <span class="kw">pub fn </span>path(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; Vec&lt;RangeInclusive&lt;usize&gt;&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="macro">vec!</span>[];
+    <span class="kw">pub fn </span>path(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; (Vec&lt;RangeInclusive&lt;usize&gt;&gt;, Vec&lt;RangeInclusive&lt;usize&gt;&gt;) {
+        <span class="kw">let </span><span class="kw-2">mut </span>up = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>down = <span class="macro">vec!</span>[];
         <span class="kw">while </span><span class="self">self</span>.head[u] != <span class="self">self</span>.head[v] {
             <span class="kw">if </span><span class="self">self</span>.pos[u] &gt; <span class="self">self</span>.pos[v] {
-                std::mem::swap(<span class="kw-2">&amp;mut </span>u, <span class="kw-2">&amp;mut </span>v);
+                up.push(<span class="self">self</span>.pos[<span class="self">self</span>.head[u]]..=<span class="self">self</span>.pos[u]);
+                u = <span class="self">self</span>.parent[<span class="self">self</span>.head[u]];
+            } <span class="kw">else </span>{
+                down.push(<span class="self">self</span>.pos[<span class="self">self</span>.head[v]]..=<span class="self">self</span>.pos[v]);
+                v = <span class="self">self</span>.parent[<span class="self">self</span>.head[v]];
             }
-            res.push(<span class="self">self</span>.pos[<span class="self">self</span>.head[v]]..=<span class="self">self</span>.pos[v]);
-            v = <span class="self">self</span>.parent[<span class="self">self</span>.head[v]];
         }
         <span class="kw">if </span><span class="self">self</span>.pos[u] &gt; <span class="self">self</span>.pos[v] {
-            std::mem::swap(<span class="kw-2">&amp;mut </span>u, <span class="kw-2">&amp;mut </span>v);
+            up.push(<span class="self">self</span>.pos[v]..=<span class="self">self</span>.pos[u]);
+        } <span class="kw">else </span>{
+            down.push(<span class="self">self</span>.pos[u]..=<span class="self">self</span>.pos[v]);
         }
-        res.push(<span class="self">self</span>.pos[u]..=<span class="self">self</span>.pos[v]);
-        res
+        down.reverse();
+        (up, down)
     }
 
     <span class="kw">pub fn </span>subtree(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; Range&lt;usize&gt; {
