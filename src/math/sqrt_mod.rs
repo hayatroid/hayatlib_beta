@@ -1,4 +1,4 @@
-//! 平方剰余
+//! 平方剰余．
 
 use ac_library::ModInt as M;
 
