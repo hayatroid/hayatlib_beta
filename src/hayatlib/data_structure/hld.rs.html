@@ -118,6 +118,41 @@
 <a href="#100" id="100">100</a>
 <a href="#101" id="101">101</a>
 <a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 重軽分解．
 
 </span><span class="kw">use </span>std::ops::{Range, RangeInclusive};
@@ -132,7 +167,9 @@
 }
 
 <span class="kw">impl </span>HLD {
-    <span class="kw">pub fn </span>new(g: <span class="kw-2">&amp;</span>Vec&lt;Vec&lt;usize&gt;&gt;, root: usize) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// $\mathrm{root}$ を根とする木 $G$ を受け取り，重軽分解をする．
+    /// `g` は $G$ の隣接グラフを，`root` は $\mathrm{root}$ を表す．
+    </span><span class="kw">pub fn </span>new(g: <span class="kw-2">&amp;</span>Vec&lt;Vec&lt;usize&gt;&gt;, root: usize) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>n = g.len();
         <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self </span>{
             g: g.clone(),
@@ -178,11 +215,13 @@
         }
     }
 
-    <span class="kw">pub fn </span>pos(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; usize {
+    <span class="doccomment">/// $G$ の頂点 $u$ の，$\mathrm{HLD}$ 上の位置を返す．
+    </span><span class="kw">pub fn </span>pos(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; usize {
         <span class="self">self</span>.pos[u]
     }
 
-    <span class="kw">pub fn </span>lca(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; usize {
+    <span class="doccomment">/// $G$ の頂点 $u,\, v$ の最小共通祖先を返す．
+    </span><span class="kw">pub fn </span>lca(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; usize {
         <span class="kw">while </span><span class="self">self</span>.head[u] != <span class="self">self</span>.head[v] {
             <span class="kw">if </span><span class="self">self</span>.pos[u] &gt; <span class="self">self</span>.pos[v] {
                 std::mem::swap(<span class="kw-2">&amp;mut </span>u, <span class="kw-2">&amp;mut </span>v);
@@ -195,7 +234,37 @@
         u
     }
 
-    <span class="kw">pub fn </span>path(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; (Vec&lt;RangeInclusive&lt;usize&gt;&gt;, Vec&lt;RangeInclusive&lt;usize&gt;&gt;) {
+    <span class="doccomment">/// $G$ 上の $u$ から $v$ へのパスに対応する $\mathrm{HLD}$ 上の区間の集合を返す．
+    /// `up` は $u$ から $\mathrm{LCA}(u,\, v)$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で逆順である）．
+    /// `down` は $\mathrm{LCA}(u,\, v)$ から $v$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で正順である）．
+    /// 
+    /// # Examples
+    /// 可換な場合は，そのまま処理する．
+    /// ```
+    /// // let (up, down) = hld.path(u, v);
+    /// //
+    /// // let mut ans = e();
+    /// // for range in up {
+    /// //     ans = op(ans, seg.prod(range));
+    /// // }
+    /// // for range in down {
+    /// //     ans = op(ans, seg.prod(range));
+    /// // }
+    /// ```
+    /// 
+    /// 非可換な場合は，逆順のセグ木を持つなどして処理する．
+    /// ```
+    /// // let (up, down) = hld.path(u, v);
+    /// //
+    /// // let mut ans = e();
+    /// // for range in up {
+    /// //     ans = op(ans, seg_rev.prod(n - 1 - range.end()..=n - 1 - range.start()));
+    /// // }
+    /// // for range in down {
+    /// //     ans = op(ans, seg.prod(range));
+    /// // }
+    /// ```
+    </span><span class="kw">pub fn </span>path(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>u: usize, <span class="kw-2">mut </span>v: usize) -&gt; (Vec&lt;RangeInclusive&lt;usize&gt;&gt;, Vec&lt;RangeInclusive&lt;usize&gt;&gt;) {
         <span class="kw">let </span><span class="kw-2">mut </span>up = <span class="macro">vec!</span>[];
         <span class="kw">let </span><span class="kw-2">mut </span>down = <span class="macro">vec!</span>[];
         <span class="kw">while </span><span class="self">self</span>.head[u] != <span class="self">self</span>.head[v] {
@@ -216,7 +285,8 @@
         (up, down)
     }
 
-    <span class="kw">pub fn </span>subtree(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; Range&lt;usize&gt; {
+    <span class="doccomment">/// $G$ 上の $u$ の部分木を，$\mathrm{HLD}$ 上の区間と対応させる．
+    </span><span class="kw">pub fn </span>subtree(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize) -&gt; Range&lt;usize&gt; {
         <span class="self">self</span>.pos[u]..<span class="self">self</span>.pos[u] + <span class="self">self</span>.size[u]
     }
 }
