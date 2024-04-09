@@ -582,46 +582,13 @@
 <a href="#564" id="564">564</a>
 <a href="#565" id="565">565</a>
 <a href="#566" id="566">566</a>
-<a href="#567" id="567">567</a>
-<a href="#568" id="568">568</a>
-<a href="#569" id="569">569</a>
-<a href="#570" id="570">570</a>
-<a href="#571" id="571">571</a>
-<a href="#572" id="572">572</a>
-<a href="#573" id="573">573</a>
-<a href="#574" id="574">574</a>
-<a href="#575" id="575">575</a>
-<a href="#576" id="576">576</a>
-<a href="#577" id="577">577</a>
-<a href="#578" id="578">578</a>
-<a href="#579" id="579">579</a>
-<a href="#580" id="580">580</a>
-<a href="#581" id="581">581</a>
-<a href="#582" id="582">582</a>
-<a href="#583" id="583">583</a>
-<a href="#584" id="584">584</a>
-<a href="#585" id="585">585</a>
-<a href="#586" id="586">586</a>
-<a href="#587" id="587">587</a>
-<a href="#588" id="588">588</a>
-<a href="#589" id="589">589</a>
-<a href="#590" id="590">590</a>
-<a href="#591" id="591">591</a>
-<a href="#592" id="592">592</a>
-<a href="#593" id="593">593</a>
-<a href="#594" id="594">594</a>
-<a href="#595" id="595">595</a>
-<a href="#596" id="596">596</a>
-<a href="#597" id="597">597</a>
-<a href="#598" id="598">598</a>
-<a href="#599" id="599">599</a>
-<a href="#600" id="600">600</a>
-<a href="#601" id="601">601</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 密な形式的冪級数．
 
 </span><span class="kw">use </span>std::{collections::VecDeque, ops::<span class="kw-2">*</span>};
 
 <span class="kw">use </span>ac_library::{convolution, ModInt998244353 <span class="kw">as </span>M, RemEuclidU32};
+
+<span class="kw">use </span><span class="kw">crate</span>::math::sqrt_mod;
 
 <span class="doccomment">/// 密な形式的冪級数．
 </span><span class="attr">#[derive(Debug, Clone, PartialEq, Eq)]
@@ -908,7 +875,7 @@
             <span class="kw">return </span><span class="prelude-val">None</span>;
         }
         <span class="kw">let </span>f = <span class="self">self</span>.clone() &gt;&gt; p;
-        <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([a_p.sqrt()<span class="question-mark">?</span>.val()]);
+        <span class="kw">let </span><span class="kw-2">mut </span>g = <span class="self">Self</span>::from([sqrt_mod(a_p.val(), M::modulus())<span class="question-mark">?</span>]);
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=(len - p / <span class="number">2</span>).next_power_of_two().trailing_zeros() {
             <span class="comment">// g ← (g + f/g) / 2
             </span>g = (g.clone() + (f.pre(<span class="number">1 </span>&lt;&lt; i) * g.inv(<span class="number">1 </span>&lt;&lt; i)).pre(<span class="number">1 </span>&lt;&lt; i)) / M::new(<span class="number">2</span>);
@@ -1179,43 +1146,6 @@
         <span class="kw">let </span>y = (<span class="number">0</span>..m).map(|i| fact_inv[i]).collect::&lt;<span class="self">Self</span>&gt;();
         <span class="kw">let </span>z = x * y;
         (<span class="number">0</span>..m).map(|i| z[i] * fact[i]).collect()
-    }
-}
-
-<span class="kw">trait </span>Mod998Traits {
-    <span class="kw">fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;M&gt;;
-}
-
-<span class="kw">impl </span>Mod998Traits <span class="kw">for </span>M {
-    <span class="comment">// Cipolla のアルゴリズム ( https://37zigen.com/cipolla-algorithm/ )
-    </span><span class="kw">fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;M&gt; {
-        <span class="kw">if </span><span class="self">self</span>.val() == <span class="number">0 </span>{
-            <span class="kw">return </span><span class="prelude-val">Some</span>(M::new(<span class="number">0</span>));
-        }
-        <span class="kw">let </span>p = M::modulus() <span class="kw">as </span>u64;
-        <span class="kw">if </span><span class="self">self</span>.pow((p - <span class="number">1</span>) / <span class="number">2</span>).val() != <span class="number">1 </span>{
-            <span class="kw">return </span><span class="prelude-val">None</span>;
-        }
-        <span class="kw">let </span>b: M = (<span class="number">0</span>..).find(|<span class="kw-2">&amp;</span>i| (M::new(i) * i - <span class="self">self</span>).pow((p - <span class="number">1</span>) / <span class="number">2</span>).val() != <span class="number">1</span>).unwrap().into();
-        <span class="kw">let </span>base = b * b - <span class="self">self</span>;
-        <span class="kw">let </span>mul = |a: (M, M), b: (M, M)| -&gt; (M, M) {
-            (
-                a.<span class="number">0 </span>* b.<span class="number">0 </span>+ a.<span class="number">1 </span>* b.<span class="number">1 </span>* base,
-                a.<span class="number">0 </span>* b.<span class="number">1 </span>+ a.<span class="number">1 </span>* b.<span class="number">0</span>,
-            )
-        };
-        <span class="kw">let </span>pow = |<span class="kw-2">mut </span>a: (M, M), <span class="kw-2">mut </span>m: u64| -&gt; (M, M) {
-            <span class="kw">let </span><span class="kw-2">mut </span>res = (M::new(<span class="number">1</span>), M::new(<span class="number">0</span>));
-            <span class="kw">while </span>m &gt; <span class="number">0 </span>{
-                <span class="kw">if </span>m &amp; <span class="number">1 </span>== <span class="number">1 </span>{
-                    res = mul(res, a);
-                }
-                a = mul(a, a);
-                m &gt;&gt;= <span class="number">1</span>;
-            }
-            res
-        };
-        <span class="prelude-val">Some</span>(pow((b, M::new(<span class="number">1</span>)), (p + <span class="number">1</span>) / <span class="number">2</span>).<span class="number">0</span>)
     }
 }
 </code></pre></div></section></main></body></html>
