@@ -149,8 +149,6 @@
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 重軽分解．
 
 </span><span class="kw">use </span>std::ops::{Range, RangeInclusive};
@@ -166,8 +164,6 @@
 
 <span class="kw">impl </span>HLD {
     <span class="doccomment">/// 根付き木 $G$，根 $\mathrm{root}$ を受け取り，重軽分解する．
-    /// 
-    /// `g` は $G$ の隣接リストを，`root` は $\mathrm{root}$ を表す．
     </span><span class="kw">pub fn </span>new(g: <span class="kw-2">&amp;</span>Vec&lt;Vec&lt;usize&gt;&gt;, root: usize) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>n = g.len();
         <span class="kw">let </span><span class="kw-2">mut </span>res = <span class="self">Self </span>{
