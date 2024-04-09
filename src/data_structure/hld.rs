@@ -59,12 +59,12 @@ impl HLD {
         }
     }
 
-    /// $G$ の頂点 $u$ の，$\mathrm{HLD}$ 上の位置を返す．
+    /// $G$ 上の点 $u$ の，$\mathrm{HLD}$ 上の位置を返す．
     pub fn pos(&self, u: usize) -> usize {
         self.pos[u]
     }
 
-    /// $G$ の頂点 $u, v$ の最小共通祖先を返す．
+    /// $G$ 上の点 $u, v$ の最小共通祖先を返す．
     pub fn lca(&self, mut u: usize, mut v: usize) -> usize {
         while self.head[u] != self.head[v] {
             if self.pos[u] > self.pos[v] {
