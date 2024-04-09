@@ -1,11 +1,14 @@
+//! 重軽分解．
+
 use std::ops::{Range, RangeInclusive};
 
+/// 重軽分解
 pub struct HLD {
     g: Vec<Vec<usize>>,
     size: Vec<usize>,
     parent: Vec<usize>,
     head: Vec<usize>,
-    pub pos: Vec<usize>,
+    pos: Vec<usize>,
 }
 
 impl HLD {
@@ -55,6 +58,10 @@ impl HLD {
         }
     }
 
+    pub fn pos(&self, u: usize) -> usize {
+        self.pos[u]
+    }
+
     pub fn lca(&self, mut u: usize, mut v: usize) -> usize {
         while self.head[u] != self.head[v] {
             if self.pos[u] > self.pos[v] {
@@ -68,20 +75,25 @@ impl HLD {
         u
     }
 
-    pub fn path(&self, mut u: usize, mut v: usize) -> Vec<RangeInclusive<usize>> {
-        let mut res = vec![];
+    pub fn path(&self, mut u: usize, mut v: usize) -> (Vec<RangeInclusive<usize>>, Vec<RangeInclusive<usize>>) {
+        let mut up = vec![];
+        let mut down = vec![];
         while self.head[u] != self.head[v] {
             if self.pos[u] > self.pos[v] {
-                std::mem::swap(&mut u, &mut v);
+                up.push(self.pos[self.head[u]]..=self.pos[u]);
+                u = self.parent[self.head[u]];
+            } else {
+                down.push(self.pos[self.head[v]]..=self.pos[v]);
+                v = self.parent[self.head[v]];
             }
-            res.push(self.pos[self.head[v]]..=self.pos[v]);
-            v = self.parent[self.head[v]];
         }
         if self.pos[u] > self.pos[v] {
-            std::mem::swap(&mut u, &mut v);
+            up.push(self.pos[v]..=self.pos[u]);
+        } else {
+            down.push(self.pos[u]..=self.pos[v]);
         }
-        res.push(self.pos[u]..=self.pos[v]);
-        res
+        down.reverse();
+        (up, down)
     }
 
     pub fn subtree(&self, u: usize) -> Range<usize> {
