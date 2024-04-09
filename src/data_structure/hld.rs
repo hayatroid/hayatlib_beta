@@ -2,7 +2,7 @@
 
 use std::ops::{Range, RangeInclusive};
 
-/// 重軽分解
+/// 重軽分解．
 pub struct HLD {
     g: Vec<Vec<usize>>,
     size: Vec<usize>,
@@ -126,7 +126,7 @@ impl HLD {
         (up, down)
     }
 
-    /// $G$ 上の $u$ の部分木を，$\mathrm{HLD}$ 上の区間と対応させる．
+    /// $G$ 上の $u$ を根とする部分木に対応する，$\mathrm{HLD}$ 上の区間を返す．
     pub fn subtree(&self, u: usize) -> Range<usize> {
         self.pos[u]..self.pos[u] + self.size[u]
     }
