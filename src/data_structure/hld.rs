@@ -13,6 +13,7 @@ pub struct HLD {
 
 impl HLD {
     /// $\mathrm{root}$ を根とする木 $G$ を受け取り，重軽分解をする．
+    /// 
     /// `g` は $G$ の隣接グラフを，`root` は $\mathrm{root}$ を表す．
     pub fn new(g: &Vec<Vec<usize>>, root: usize) -> Self {
         let n = g.len();
@@ -65,7 +66,7 @@ impl HLD {
         self.pos[u]
     }
 
-    /// $G$ の頂点 $u,\, v$ の最小共通祖先を返す．
+    /// $G$ の頂点 $u, v$ の最小共通祖先を返す．
     pub fn lca(&self, mut u: usize, mut v: usize) -> usize {
         while self.head[u] != self.head[v] {
             if self.pos[u] > self.pos[v] {
@@ -80,14 +81,14 @@ impl HLD {
     }
 
     /// $G$ 上の $u$ から $v$ へのパスに対応する $\mathrm{HLD}$ 上の区間の集合を返す．
-    /// `up` は $u$ から $\mathrm{LCA}(u,\, v)$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で逆順である）．
-    /// `down` は $\mathrm{LCA}(u,\, v)$ から $v$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で正順である）．
+    /// 
+    /// `up` は $u$ から $\mathrm{LCA}(u, v)$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で逆順である）．
+    /// 
+    /// `down` は $\mathrm{LCA}(u, v)$ から $v$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で正順である）．
     /// 
     /// # Examples
     /// 可換な場合は，そのまま処理する．
     /// ```
-    /// // let (up, down) = hld.path(u, v);
-    /// //
     /// // let mut ans = e();
     /// // for range in up {
     /// //     ans = op(ans, seg.prod(range));
@@ -99,8 +100,6 @@ impl HLD {
     /// 
     /// 非可換な場合は，逆順のセグ木を持つなどして処理する．
     /// ```
-    /// // let (up, down) = hld.path(u, v);
-    /// //
     /// // let mut ans = e();
     /// // for range in up {
     /// //     ans = op(ans, seg_rev.prod(n - 1 - range.end()..=n - 1 - range.start()));
