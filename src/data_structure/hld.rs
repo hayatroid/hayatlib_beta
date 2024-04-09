@@ -12,6 +12,8 @@ pub struct HLD {
 }
 
 impl HLD {
+    /// $\mathrm{root}$ を根とする木 $G$ を受け取り，重軽分解をする．
+    /// `g` は $G$ の隣接グラフを，`root` は $\mathrm{root}$ を表す．
     pub fn new(g: &Vec<Vec<usize>>, root: usize) -> Self {
         let n = g.len();
         let mut res = Self {
@@ -58,10 +60,12 @@ impl HLD {
         }
     }
 
+    /// $G$ の頂点 $u$ の，$\mathrm{HLD}$ 上の位置を返す．
     pub fn pos(&self, u: usize) -> usize {
         self.pos[u]
     }
 
+    /// $G$ の頂点 $u,\, v$ の最小共通祖先を返す．
     pub fn lca(&self, mut u: usize, mut v: usize) -> usize {
         while self.head[u] != self.head[v] {
             if self.pos[u] > self.pos[v] {
@@ -75,6 +79,36 @@ impl HLD {
         u
     }
 
+    /// $G$ 上の $u$ から $v$ へのパスに対応する $\mathrm{HLD}$ 上の区間の集合を返す．
+    /// `up` は $u$ から $\mathrm{LCA}(u,\, v)$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で逆順である）．
+    /// `down` は $\mathrm{LCA}(u,\, v)$ から $v$ へのパスに対応している（$\mathrm{HLD}$ 上の区間で正順である）．
+    /// 
+    /// # Examples
+    /// 可換な場合は，そのまま処理する．
+    /// ```
+    /// // let (up, down) = hld.path(u, v);
+    /// //
+    /// // let mut ans = e();
+    /// // for range in up {
+    /// //     ans = op(ans, seg.prod(range));
+    /// // }
+    /// // for range in down {
+    /// //     ans = op(ans, seg.prod(range));
+    /// // }
+    /// ```
+    /// 
+    /// 非可換な場合は，逆順のセグ木を持つなどして処理する．
+    /// ```
+    /// // let (up, down) = hld.path(u, v);
+    /// //
+    /// // let mut ans = e();
+    /// // for range in up {
+    /// //     ans = op(ans, seg_rev.prod(n - 1 - range.end()..=n - 1 - range.start()));
+    /// // }
+    /// // for range in down {
+    /// //     ans = op(ans, seg.prod(range));
+    /// // }
+    /// ```
     pub fn path(&self, mut u: usize, mut v: usize) -> (Vec<RangeInclusive<usize>>, Vec<RangeInclusive<usize>>) {
         let mut up = vec![];
         let mut down = vec![];
@@ -96,6 +130,7 @@ impl HLD {
         (up, down)
     }
 
+    /// $G$ 上の $u$ の部分木を，$\mathrm{HLD}$ 上の区間と対応させる．
     pub fn subtree(&self, u: usize) -> Range<usize> {
         self.pos[u]..self.pos[u] + self.size[u]
     }
