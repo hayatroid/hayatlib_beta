@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["data_structure","math","polynomial","sample"]};
+window.SIDEBAR_ITEMS = {"mod":["data_structure","math","polynomial","sample","tree"]};
