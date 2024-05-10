@@ -9,6 +9,7 @@ pub struct HLD {
     parent: Vec<usize>,
     head: Vec<usize>,
     pos: Vec<usize>,
+    pos_idx: Vec<usize>,
 }
 
 impl HLD {
@@ -21,6 +22,7 @@ impl HLD {
             parent: vec![root; n],
             head: vec![root; n],
             pos: vec![!0; n],
+            pos_idx: vec![!0; n],
         };
         res.dfs_size(root, root);
         res.dfs_hld(root, root, &mut 0);
@@ -48,6 +50,7 @@ impl HLD {
     fn dfs_hld(&mut self, v: usize, p: usize, cnt: &mut usize) {
         self.parent[v] = p;
         self.pos[v] = *cnt;
+        self.pos_idx[*cnt] = v;
         *cnt += 1;
         for i in 0..self.g[v].len() {
             let c = self.g[v][i];
@@ -76,6 +79,25 @@ impl HLD {
             std::mem::swap(&mut u, &mut v);
         }
         u
+    }
+
+    /// $G$ 上の $u$ から $v$ へのパスにおいて，$u$ から $k$ 進んだ位置にある頂点を返す．
+    /// そのような頂点が存在しない場合は `None` を返す．
+    pub fn jump(&self, u: usize, v: usize, mut k: usize) -> Option<usize> {
+        let (up, down) = self.path(u, v);
+        for range in up {
+            if k < range.end() - range.start() + 1 {
+                return Some(self.pos_idx[range.end() - k]);
+            }
+            k -= range.end() - range.start() + 1;
+        }
+        for range in down {
+            if k < range.end() - range.start() + 1 {
+                return Some(self.pos_idx[range.start() + k]);
+            }
+            k -= range.end() - range.start() + 1;
+        }
+        None
     }
 
     /// $G$ 上の $u$ から $v$ へのパスに対応する，$\mathrm{HLD}$ 上の区間の集合を返す．
