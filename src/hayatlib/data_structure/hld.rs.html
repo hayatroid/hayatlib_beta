@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/data_structure/hld.rs`."><title>hld.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hayatlib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.1 (7cf61ebde 2024-03-27)" data-channel="1.77.1" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/data_structure/hld.rs`."><title>hld.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hayatlib" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 <script>
@@ -153,6 +153,28 @@
 <a href="#135" id="135">135</a>
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! 重軽分解．
 
 </span><span class="kw">use </span>std::ops::{Range, RangeInclusive};
@@ -164,6 +186,7 @@
     parent: Vec&lt;usize&gt;,
     head: Vec&lt;usize&gt;,
     pos: Vec&lt;usize&gt;,
+    pos_idx: Vec&lt;usize&gt;,
 }
 
 <span class="kw">impl </span>HLD {
@@ -176,6 +199,7 @@
             parent: <span class="macro">vec!</span>[root; n],
             head: <span class="macro">vec!</span>[root; n],
             pos: <span class="macro">vec!</span>[!<span class="number">0</span>; n],
+            pos_idx: <span class="macro">vec!</span>[!<span class="number">0</span>; n],
         };
         res.dfs_size(root, root);
         res.dfs_hld(root, root, <span class="kw-2">&amp;mut </span><span class="number">0</span>);
@@ -203,6 +227,7 @@
     <span class="kw">fn </span>dfs_hld(<span class="kw-2">&amp;mut </span><span class="self">self</span>, v: usize, p: usize, cnt: <span class="kw-2">&amp;mut </span>usize) {
         <span class="self">self</span>.parent[v] = p;
         <span class="self">self</span>.pos[v] = <span class="kw-2">*</span>cnt;
+        <span class="self">self</span>.pos_idx[<span class="kw-2">*</span>cnt] = v;
         <span class="kw-2">*</span>cnt += <span class="number">1</span>;
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="self">self</span>.g[v].len() {
             <span class="kw">let </span>c = <span class="self">self</span>.g[v][i];
@@ -232,6 +257,25 @@
         }
         u
     }
+
+    <span class="doccomment">/// $G$ 上の $u$ から $v$ へのパスにおいて，$u$ から $k$ 進んだ位置にある頂点を返す．
+    /// そのような頂点が存在しない場合は `None` を返す．
+    </span><span class="kw">pub fn </span>jump(<span class="kw-2">&amp;</span><span class="self">self</span>, u: usize, v: usize, <span class="kw-2">mut </span>k: usize) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
+        <span class="kw">let </span>(up, down) = <span class="self">self</span>.path(u, v);
+        <span class="kw">for </span>range <span class="kw">in </span>up {
+            <span class="kw">if </span>k &lt; range.end() - range.start() + <span class="number">1 </span>{
+                <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">self</span>.pos_idx[range.end() - k]);
+            }
+            k -= range.end() - range.start() + <span class="number">1</span>;
+        }
+        <span class="kw">for </span>range <span class="kw">in </span>down {
+            <span class="kw">if </span>k &lt; range.end() - range.start() + <span class="number">1 </span>{
+                <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">self</span>.pos_idx[range.start() + k]);
+            }
+            k -= range.end() - range.start() + <span class="number">1</span>;
+        }
+        <span class="prelude-val">None
+    </span>}
 
     <span class="doccomment">/// $G$ 上の $u$ から $v$ へのパスに対応する，$\mathrm{HLD}$ 上の区間の集合を返す．
     /// 
